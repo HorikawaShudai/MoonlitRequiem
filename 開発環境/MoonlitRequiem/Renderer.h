@@ -13,14 +13,13 @@
 class CRenderer
 {
 public:
-	CRenderer();
-	~CRenderer();
-
-	HRESULT Init(HWND hWd, BOOL hWinfow);
-	void Uninit(void);
-	void Update(void);
-	void Draw(void);
-	LPDIRECT3DDEVICE9 GetDevice(void);
+	CRenderer();							//コンストラクタ
+	~CRenderer();							//デストラクタ
+	HRESULT Init(HWND hWd, BOOL hWinfow);	//初期化処理
+	void Uninit(void);						//終了処理
+	void Update(void);						//更新処理
+	void Draw(void);						//描画処理
+	LPDIRECT3DDEVICE9 GetDevice(void);		//デバイス取得処理
 
 private:
 

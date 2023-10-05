@@ -38,6 +38,7 @@ class  CObject;
 class  CInputKeyboard;
 class CManager;
 class CBullet;
+class CFade;
 //プロタイプ宣言
 //CRenderer *GetRenderer(void);
 //CObject  **GetObject(void);

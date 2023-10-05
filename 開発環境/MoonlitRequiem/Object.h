@@ -30,17 +30,24 @@ public:
 		TYPE_BLOCK,
 		TYPE_ITEM,
 		TYPE_FIELD,
+		TYPE_CYLINDER,
+		TYPE_SNOWWALL,
+		TYPE_3DBLOCK,
+		TYPE_GUAGE,
+		TYPE_SCENE,
+		TYPE_FADE,
+		TYPE_BOSS,
 		TYPE_MAX
 	}TYPE;
 
-	CObject(int nPriority = 3);
-	virtual ~CObject();
-	virtual HRESULT Init(void) = 0;
-	virtual void Uninit(void) = 0;
-	virtual void Update(void) = 0;
-	virtual void Draw(void) = 0;
+	CObject(int nPriority = 3);		//コンストラクタ
+	virtual ~CObject();				//デストラクタ
+	virtual HRESULT Init(void) = 0;	//初期化処理
+	virtual void Uninit(void) = 0;	//終了処理
+	virtual void Update(void) = 0;	//更新処理
+	virtual void Draw(void) = 0;	//描画処理
+
 	virtual void SetPos(D3DXVECTOR3 pos, float Height, float Width) = 0;
-	//virtual void SetRot(float rot) = 0;
 	virtual D3DXVECTOR3 GetPos(void) = 0;
 	static void ReleaseAll(void);
 	static void UpdateAll(void);
