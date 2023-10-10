@@ -27,8 +27,9 @@ CPlayer::CPlayer()
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nCntAnim = 0;
 	m_nCntPattern = 0;
+	PlayerRot = 0;
 	m_pTexture = NULL;
-
+	m_Type = TYPE_NONE;
 }
 //====================================================
 //デストラクタ
@@ -126,12 +127,16 @@ void CPlayer::Update(void)
 	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 	m_move.x *= 0.05f;
 	
-	m_nCntAnim++;
-	if (m_nCntAnim % 30 == 0)
+	if (m_Type == TYPE_WALK)
 	{
-		m_nCntPattern++;
-		SetAnim(m_nCntPattern%4,4,0,2);
+		m_nCntAnim++;
+		if (m_nCntAnim % 30 == 0)
+		{
+			m_nCntPattern++;
+			SetAnim(m_nCntPattern % 4, 4, PlayerRot, 2);
+		}
 	}
+	
 }
 
 //====================================================
@@ -149,58 +154,45 @@ void CPlayer::PlayerContoroll(void)
 {
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
 	
-#if 0
-	if (pKeyboard->GetPress(DIK_S) == true)
-	{//Wのみ押された場合
-		if (pKeyboard->GetPress(DIK_A) == true)
-		{//Aのみ押された場合
-			m_move.x += cosf(D3DX_PI * 0.75f)*PLAYER_SPEED;
-			m_move.y += sinf(D3DX_PI * 0.75f)*PLAYER_SPEED;
-		}
-		else if (pKeyboard->GetPress(DIK_D) == true)
-		{//Dのみ押された場合
-			m_move.x += cosf(D3DX_PI * 0.25f)*PLAYER_SPEED;
-			m_move.y += sinf(D3DX_PI * 0.25f)*PLAYER_SPEED;
-		}
-		else
-		{
-			m_move.x += cosf(D3DX_PI * 0.5f)*PLAYER_SPEED;
-			m_move.y += sinf(D3DX_PI * 0.5f)*PLAYER_SPEED;
-		}
+
+	if (pKeyboard->GetPress(DIK_W) == false && pKeyboard->GetPress(DIK_A) == false && pKeyboard->GetPress(DIK_D) == false && m_Type != TYPE_JUMP)
+	{
+		m_Type = TYPE_NONE;
 	}
-	else if (pKeyboard->GetPress(DIK_W) == true)
-	{//Sのみ押された場合
-		if (pKeyboard->GetPress(DIK_A) == true)
-		{//Aのみ押された場合
-			m_move.x += cosf(-D3DX_PI * 0.75f)*PLAYER_SPEED;
-			m_move.y += sinf(-D3DX_PI * 0.75f)*PLAYER_SPEED;
-		}
-		else if (pKeyboard->GetPress(DIK_D) == true)
-		{//Dのみ押された場合
-			m_move.x += cosf(-D3DX_PI * 0.25f)*PLAYER_SPEED;
-			m_move.y += sinf(-D3DX_PI * 0.25f)*PLAYER_SPEED;
-		}
-		else
-		{
-			m_move.x += cosf(-D3DX_PI * 0.5f)*PLAYER_SPEED;
-			m_move.y += sinf(-D3DX_PI * 0.5f)*PLAYER_SPEED;
-		}
-	}
-#endif
-	if (pKeyboard->GetPress(DIK_A) == true)
+	if (pKeyboard->GetPress(DIK_LEFT) == true)
 	{//Aのみ押された場
 		m_move.x += cosf(D3DX_PI *1.0f)*PLAYER_SPEED;
 		m_move.y += sinf(D3DX_PI *1.0f)*PLAYER_SPEED;
+		PlayerRot = 1;
+		m_Type = TYPE_WALK;
 	}
-	else if (pKeyboard->GetPress(DIK_D) == true)
+	else if (pKeyboard->GetPress(DIK_RIGHT) == true)
 	{//Dのみ押された場合
 		m_move.x += cosf(D3DX_PI *0.0f)*PLAYER_SPEED;
 		m_move.y += sinf(D3DX_PI *0.0f)*PLAYER_SPEED;
+		PlayerRot = 0;
+		m_Type = TYPE_WALK;
 	}
-	if (pKeyboard->GetTrigger(DIK_W) == true)
-	{//Wのみ押された場合
+	if (pKeyboard->GetTrigger(DIK_DOWN) == true)
+	{//↓のみ押された場合
+	}
+	if (pKeyboard->GetTrigger(DIK_UP) == true)
+	{//↑のみ押された場合
+	}
+	if (pKeyboard->GetTrigger(DIK_SPACE) == true)
+	{//スペースのみ押された場合
 		m_move.y -= 15.0f;
 	}
+	//攻撃操作
+	if (pKeyboard->GetTrigger(DIK_B) == true && m_Type != TYPE_JUMP)
+	{//Bのみ押された場合
+	}
+	if (pKeyboard->GetTrigger(DIK_N) == true && m_Type != TYPE_JUMP)
+	{//Nのみ押された場合
+	}
+
+	
+	
 	if (pKeyboard->GetTrigger(DIK_R) == true)
 	{//Wのみ押された場合
 		CObject::Reset();
