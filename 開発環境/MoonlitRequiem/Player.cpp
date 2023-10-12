@@ -13,8 +13,10 @@
 
 #define PLAYER_HEIGHT	(30.0f)
 #define PLAYER_WIDTH	(100.0f)
-#define PLAYER_SPEED	(6.2f)
+#define PLAYER_SPEED	(4.2f)
 #define  GRAVITY (0.27665f)
+#define COUNT_SPEED (15)
+#define PLAYER_MAXTEX (6)
 
 LPDIRECT3DTEXTURE9 CPlayer::m_pTexture = NULL;
 
@@ -126,16 +128,8 @@ void CPlayer::Update(void)
 	//CItem::CollisionItem(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 	m_move.x *= 0.05f;
+	PlayerTexture();
 	
-	if (m_Type == TYPE_WALK)
-	{
-		m_nCntAnim++;
-		if (m_nCntAnim % 30 == 0)
-		{
-			m_nCntPattern++;
-			SetAnim(m_nCntPattern % 4, 4, PlayerRot, 2);
-		}
-	}
 	
 }
 
@@ -159,19 +153,25 @@ void CPlayer::PlayerContoroll(void)
 	{
 		m_Type = TYPE_NONE;
 	}
-	if (pKeyboard->GetPress(DIK_LEFT) == true)
+	if (pKeyboard->GetPress(DIK_A) == true)
 	{//Aのみ押された場
 		m_move.x += cosf(D3DX_PI *1.0f)*PLAYER_SPEED;
 		m_move.y += sinf(D3DX_PI *1.0f)*PLAYER_SPEED;
 		PlayerRot = 1;
-		m_Type = TYPE_WALK;
+		if (m_Type != TYPE_JUMP)
+		{
+			m_Type = TYPE_WALK;
+		}
 	}
-	else if (pKeyboard->GetPress(DIK_RIGHT) == true)
+	else if (pKeyboard->GetPress(DIK_D) == true)
 	{//Dのみ押された場合
 		m_move.x += cosf(D3DX_PI *0.0f)*PLAYER_SPEED;
 		m_move.y += sinf(D3DX_PI *0.0f)*PLAYER_SPEED;
 		PlayerRot = 0;
-		m_Type = TYPE_WALK;
+		if (m_Type != TYPE_JUMP)
+		{
+			m_Type = TYPE_WALK;
+		}
 	}
 	if (pKeyboard->GetTrigger(DIK_DOWN) == true)
 	{//↓のみ押された場合
@@ -182,6 +182,7 @@ void CPlayer::PlayerContoroll(void)
 	if (pKeyboard->GetTrigger(DIK_SPACE) == true)
 	{//スペースのみ押された場合
 		m_move.y -= 15.0f;
+		m_Type = TYPE_JUMP;
 	}
 	//攻撃操作
 	if (pKeyboard->GetTrigger(DIK_B) == true && m_Type != TYPE_JUMP)
@@ -196,5 +197,72 @@ void CPlayer::PlayerContoroll(void)
 	if (pKeyboard->GetTrigger(DIK_R) == true)
 	{//Wのみ押された場合
 		CObject::Reset();
+	}
+}
+
+
+void CPlayer::PlayerTexture(void)
+{
+	if (m_Type == TYPE_NONE)
+	{
+		if (PlayerRot == 1)
+		{
+			SetAnim(PlayerRot, PLAYER_MAXTEX, 0, PLAYER_MAXTEX);
+
+		}
+		if (PlayerRot == 0)
+		{
+			SetAnim(PlayerRot, PLAYER_MAXTEX, 0, PLAYER_MAXTEX);
+
+		}
+	}
+	if (m_Type == TYPE_WALK)
+	{
+		m_nCntAnim++;
+		if (m_nCntAnim % COUNT_SPEED == 0)
+		{
+			m_nCntPattern++;
+			if (PlayerRot == 1)
+			{
+				SetAnim(m_nCntPattern % PLAYER_MAXTEX, PLAYER_MAXTEX, 2, PLAYER_MAXTEX);
+
+			}
+			if (PlayerRot == 0)
+			{
+				SetAnim(m_nCntPattern % PLAYER_MAXTEX, PLAYER_MAXTEX, 1, PLAYER_MAXTEX);
+
+			}
+		}
+	}
+	if (m_Type == TYPE_JUMP)
+	{
+		if (m_posOld.y < m_pos.y)
+		{//下に降りてる
+
+			if (PlayerRot == 1)
+			{//左
+				SetAnim(5, PLAYER_MAXTEX, 0, PLAYER_MAXTEX);
+
+			}
+			if (PlayerRot == 0)
+			{//右
+				SetAnim(4 , PLAYER_MAXTEX, 0, PLAYER_MAXTEX);
+
+			}
+		}
+		else if (m_posOld.y > m_pos.y)
+		{//上に上がっている時
+
+			if (PlayerRot == 1)
+			{//左
+				SetAnim(3, PLAYER_MAXTEX, 0, PLAYER_MAXTEX);
+
+			}
+			if (PlayerRot == 0)
+			{//右
+				SetAnim(2, PLAYER_MAXTEX, 0, PLAYER_MAXTEX);
+
+			}
+		}
 	}
 }

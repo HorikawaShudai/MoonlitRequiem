@@ -29,6 +29,7 @@ public:
 	void Update(void);
 	void Draw(void);
 	void PlayerContoroll(void);
+	void PlayerTexture(void);
 	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_posOld;
 

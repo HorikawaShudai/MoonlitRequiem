@@ -158,18 +158,18 @@ bool CInputKeyboard::GetTrigger(int nKey)
 //============================================================
 //ゲームパッド
 //============================================================
-#if 0
-void UninitGamePad(void)
+#if 1
+void CInputGamePad::Uninit(void)
 {
 	XInputEnable(false);
 }
-void UpdateGamePad(void)
+void CInputGamePad::Update(void)
 {
 
-	ZeroMemory(&g_aGamePadState, sizeof(XINPUT_STATE));
+	ZeroMemory(&m_aGamePadState, sizeof(XINPUT_STATE));
 
 	// Simply get the state of the controller from XInput.
-	DWORD dwResult = XInputGetState(0, &g_aGamePadState);
+	DWORD dwResult = XInputGetState(0, &m_aGamePadState);
 
 	//ゲームパッドが接続されている状態
 	if (dwResult == ERROR_SUCCESS)
@@ -182,13 +182,13 @@ void UpdateGamePad(void)
 	}
 }
 
-bool GetGamepadPress(WORD nButton)
+bool CInputGamePad::GetPress(WORD nButton)
 {
-	return (g_aGamePadState.Gamepad.wButtons & nButton) ? true : false;
+	return (m_aGamePadState.Gamepad.wButtons & nButton) ? true : false;
 
 }
 
-bool GetGamepadTrigger(WORD nButton)
+bool CInputGamePad::GetTrigger(WORD nButton)
 {
 	return (nButton & 0x80) ? true : false;
 }

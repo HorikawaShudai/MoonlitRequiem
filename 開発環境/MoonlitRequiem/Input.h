@@ -50,4 +50,20 @@ private:
 	BYTE m_aKeyState[256];
 	BYTE m_aKeyStateTrigger[256];
 };
+
+class CInputGamePad : public CInput
+{
+public:
+	CInputGamePad();
+	~CInputGamePad();
+	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
+	void Uninit(void);
+	void Update(void);
+	bool GetPress(WORD nButton);
+	bool GetTrigger(WORD nButton);
+
+private:
+	XINPUT_STATE m_aGamePadState;
+	XINPUT_STATE m_aKeyStateTrigger;
+};
 #endif
