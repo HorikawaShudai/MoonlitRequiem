@@ -30,6 +30,8 @@ public:
 	void Draw(void);
 	void PlayerContoroll(void);
 	void PlayerTexture(void);
+	void ScloolWorld(void);
+	static  D3DXVECTOR3 GetWorld(void);
 	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_posOld;
 
@@ -37,9 +39,12 @@ private:
 	D3DXVECTOR3 m_move;
 	int m_nCntAnim;
 	int m_nCntPattern;
-	int PlayerRot; 
+	int PlayerRot;
+	int m_JumpCnt;
+	bool m_bJump;
 	static LPDIRECT3DTEXTURE9 m_pTexture;
 	PLAYER_TYPE m_Type;
+	static D3DXVECTOR3 m_WorldPos;
 };
 
 #endif

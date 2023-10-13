@@ -9,17 +9,20 @@
 #include "Manager.h"
 #include "Renderer.h"
 #include "Input.h"
+#include "Block.h"
 
 
 #define PLAYER_HEIGHT	(30.0f)
 #define PLAYER_WIDTH	(100.0f)
-#define PLAYER_SPEED	(4.2f)
+#define PLAYER_SPEED	(3.8f)
+#define PLAYER_JUMP (11.0f)
 #define  GRAVITY (0.27665f)
 #define COUNT_SPEED (15)
 #define PLAYER_MAXTEX (6)
+#define PLAYER_MAXJUMP (2)
 
 LPDIRECT3DTEXTURE9 CPlayer::m_pTexture = NULL;
-
+D3DXVECTOR3 CPlayer::m_WorldPos = D3DXVECTOR3(0.0f,0.0f,0.0f);
 //====================================================
 //コンストラクタ
 //====================================================
@@ -32,6 +35,9 @@ CPlayer::CPlayer()
 	PlayerRot = 0;
 	m_pTexture = NULL;
 	m_Type = TYPE_NONE;
+	m_bJump = false;
+	m_JumpCnt = 0;
+
 }
 //====================================================
 //デストラクタ
@@ -95,6 +101,8 @@ void CPlayer::Update(void)
 	{
 		m_move.y = 0.0f;
 		m_pos.y = m_posOld.y;
+		m_bJump = false;
+		m_JumpCnt = 0;
 	}
 	if (m_pos.y - PLAYER_WIDTH < 0.0f)
 	{
@@ -111,26 +119,27 @@ void CPlayer::Update(void)
 		m_move.x = 0.0f;
 		m_pos.x = m_posOld.x;
 	}
-	//if (CBlock::CollisionBlock(m_posOld, m_pos,PLAYER_HEIGHT, PLAYER_WIDTH) == TRUE)
-	//{
-	//	m_move.y = 0.0f;
+	if (CBlock::CollisionBlock(m_posOld, m_pos,PLAYER_HEIGHT, PLAYER_WIDTH) == TRUE)
+	{
+		m_move.y = 0.0f;
 
-	//	m_pos.y = m_posOld.y;
+		m_pos.y = m_posOld.y;
+		m_bJump = false;
+		m_JumpCnt = 0;
 
-	//}
-	//if (CBlock::HCollisionBlock(m_posOld, m_pos, PLAYER_HEIGHT, PLAYER_WIDTH) == TRUE)
-	//{
-	//	m_move.x = 0.0f;
+	}
+	if (CBlock::HCollisionBlock(m_posOld, m_pos, PLAYER_HEIGHT, PLAYER_WIDTH) == TRUE)
+	{
+		m_move.x = 0.0f;
 
-	//	m_pos.x = m_posOld.x;
+		m_pos.x = m_posOld.x;
 
-	//}
+	}
 	//CItem::CollisionItem(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 	m_move.x *= 0.05f;
 	PlayerTexture();
-	
-	
+	GetWorld();
 }
 
 //====================================================
@@ -149,16 +158,13 @@ void CPlayer::PlayerContoroll(void)
 	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
 	
 
-	if (pKeyboard->GetPress(DIK_W) == false && pKeyboard->GetPress(DIK_A) == false && pKeyboard->GetPress(DIK_D) == false && m_Type != TYPE_JUMP)
-	{
-		m_Type = TYPE_NONE;
-	}
+	
 	if (pKeyboard->GetPress(DIK_A) == true)
 	{//Aのみ押された場
 		m_move.x += cosf(D3DX_PI *1.0f)*PLAYER_SPEED;
 		m_move.y += sinf(D3DX_PI *1.0f)*PLAYER_SPEED;
 		PlayerRot = 1;
-		if (m_Type != TYPE_JUMP)
+		if (m_bJump == false)
 		{
 			m_Type = TYPE_WALK;
 		}
@@ -168,7 +174,7 @@ void CPlayer::PlayerContoroll(void)
 		m_move.x += cosf(D3DX_PI *0.0f)*PLAYER_SPEED;
 		m_move.y += sinf(D3DX_PI *0.0f)*PLAYER_SPEED;
 		PlayerRot = 0;
-		if (m_Type != TYPE_JUMP)
+		if (m_bJump == false)
 		{
 			m_Type = TYPE_WALK;
 		}
@@ -179,10 +185,12 @@ void CPlayer::PlayerContoroll(void)
 	if (pKeyboard->GetTrigger(DIK_UP) == true)
 	{//↑のみ押された場合
 	}
-	if (pKeyboard->GetTrigger(DIK_SPACE) == true)
+	if (pKeyboard->GetTrigger(DIK_SPACE) == true && m_JumpCnt < PLAYER_MAXJUMP)
 	{//スペースのみ押された場合
-		m_move.y -= 15.0f;
+		m_move.y -= PLAYER_JUMP;
 		m_Type = TYPE_JUMP;
+		m_bJump = true;
+		m_JumpCnt++;
 	}
 	//攻撃操作
 	if (pKeyboard->GetTrigger(DIK_B) == true && m_Type != TYPE_JUMP)
@@ -197,6 +205,10 @@ void CPlayer::PlayerContoroll(void)
 	if (pKeyboard->GetTrigger(DIK_R) == true)
 	{//Wのみ押された場合
 		CObject::Reset();
+	}
+	if (pKeyboard->GetPress(DIK_W) == false && pKeyboard->GetPress(DIK_A) == false && pKeyboard->GetPress(DIK_D) == false && m_bJump == false)
+	{
+		m_Type = TYPE_NONE;
 	}
 }
 
@@ -265,4 +277,44 @@ void CPlayer::PlayerTexture(void)
 			}
 		}
 	}
+}
+
+//========================================================================================================
+//攻撃がヒットしてしまったとき
+//========================================================================================================
+void CPlayer::ScloolWorld(void)
+{
+	if (m_pos.x > 920.0f)
+	{
+		m_pos.x = 920.0f;
+
+		m_WorldPos.x -= m_move.x;
+
+	}
+	else if (m_pos.x < 360.0f)
+	{
+		m_pos.x = 360.0f;
+
+		m_WorldPos.x -= m_move.x;
+
+	}
+	if (m_pos.y >  500.0f)
+	{
+		m_pos.y = 500.0f;
+
+		m_WorldPos.y -= m_move.y;
+
+	}
+	else if (m_pos.y < 220.0f)
+	{
+		m_pos.y = 220.0f;
+
+		m_WorldPos.y -= m_move.y;
+
+	}
+}
+
+D3DXVECTOR3 CPlayer::GetWorld(void)
+{
+	return m_WorldPos;
 }

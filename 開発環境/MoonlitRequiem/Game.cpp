@@ -12,6 +12,7 @@
 #include "Manager.h"
 #include "sound.h"
 #include "Object2D.h"
+#include "CreateMap.h"
 
 
 //====================================================
@@ -31,6 +32,7 @@ HRESULT CGame::Init(void)
 {
 	CSound::Play(CSound::SOUND_LABEL_BGM001);
 	CObject2D::Create(CObject::TYPE_PLAYER, 1);
+	CCsvMap::LoadMap();
 	return S_OK;
 }
 void CGame::Uninit(void)

@@ -8,6 +8,7 @@
 #include "Renderer.h"
 #include "Manager.h"
 #include "Player.h"
+#include "Block.h"
 
 
 #define POLYGON_HEIGHT	(30.0f)
@@ -201,6 +202,11 @@ CObject2D *CObject2D::Create(TYPE type2D,int type)
 	{
 	case TYPE_PLAYER:
 		pObject2D = new CPlayer;
+
+		pObject2D->Init();
+		break;
+	case TYPE_BLOCK:
+		pObject2D = new CBlock;
 
 		pObject2D->Init();
 		break;
