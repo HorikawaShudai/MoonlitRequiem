@@ -12,8 +12,8 @@
 #include "Block.h"
 
 
-#define PLAYER_HEIGHT	(30.0f)
-#define PLAYER_WIDTH	(100.0f)
+#define PLAYER_HEIGHT	(100.0f)
+#define PLAYER_WIDTH	(30.0f)
 #define PLAYER_SPEED	(3.8f)
 #define PLAYER_JUMP (11.0f)
 #define  GRAVITY (0.27665f)
@@ -28,7 +28,7 @@ D3DXVECTOR3 CPlayer::m_WorldPos = D3DXVECTOR3(0.0f,0.0f,0.0f);
 //====================================================
 CPlayer::CPlayer()
 {
-	m_pos = D3DXVECTOR3(640.0f, 600.0f, 0.0f);
+	m_pos = D3DXVECTOR3(640.0f, 60.0f, 0.0f);
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nCntAnim = 0;
 	m_nCntPattern = 0;
@@ -56,7 +56,7 @@ HRESULT CPlayer::Init(void)
 	CObject2D::Init();
 	SetAnim(m_nCntPattern % 4, 4, 0, 2);
 	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
-	CTexture *pTexture = CManager::GetpTexture();
+	CTexture *pTexture = CManager::GetInstance()->GetpTexture();
 	m_TexId = pTexture->Regist("data\\TEXTURE\\player001.png");
 	BindTexture(pTexture->GetAddress(m_TexId));
 	SetType(TYPE_PLAYER);
@@ -93,53 +93,70 @@ void CPlayer::Update(void)
 	PlayerContoroll();
 
 	m_move.y += GRAVITY;
+	if (m_move.y >= GRAVITY * 24)
+	{
+		m_move.y = GRAVITY * 24;
+	}
+
+	if (m_move.y < -PLAYER_JUMP)
+	{
+		m_move.y = -PLAYER_JUMP;
+	}
 	
 	m_pos += m_move;
+	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 
 
 	if (m_pos.y > 720.0f)
 	{
-		m_move.y = 0.0f;
+		/*m_move.y = 0.0f;
 		m_pos.y = m_posOld.y;
 		m_bJump = false;
-		m_JumpCnt = 0;
+		m_JumpCnt = 0;*/
 	}
-	if (m_pos.y - PLAYER_WIDTH < 0.0f)
+	if (m_pos.y - PLAYER_HEIGHT < 0.0f)
 	{
 		m_move.y = 0.0f;
 		m_pos.y = m_posOld.y;
 	}
-	if (m_pos.x - PLAYER_HEIGHT < 0.0f)
+	if (m_pos.x - PLAYER_WIDTH < 0.0f)
 	{
 		m_move.x = 0.0f;
 		m_pos.x = m_posOld.x;
 	}
-	if (m_pos.x + PLAYER_HEIGHT > 1280.0f)
+	if (m_pos.x + PLAYER_WIDTH > 1280.0f)
 	{
 		m_move.x = 0.0f;
 		m_pos.x = m_posOld.x;
 	}
 	if (CBlock::CollisionBlock(m_posOld, m_pos,PLAYER_HEIGHT, PLAYER_WIDTH) == TRUE)
 	{
-		m_move.y = 0.0f;
 
 		m_pos.y = m_posOld.y;
+		m_move.y = 0.0f;
+
+		SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
+
 		m_bJump = false;
 		m_JumpCnt = 0;
 
 	}
+	
 	if (CBlock::HCollisionBlock(m_posOld, m_pos, PLAYER_HEIGHT, PLAYER_WIDTH) == TRUE)
 	{
-		m_move.x = 0.0f;
 
 		m_pos.x = m_posOld.x;
+		m_move.x = 0.0f;
+
+		SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 
 	}
 	//CItem::CollisionItem(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
-	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
-	m_move.x *= 0.05f;
+	m_move.x *= 0.06f;
 	PlayerTexture();
-	GetWorld();
+	ScloolWorld();
+	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
+
 }
 
 //====================================================
@@ -155,7 +172,7 @@ void CPlayer::Draw(void)
 //====================================================
 void CPlayer::PlayerContoroll(void)
 {
-	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pKeyboard = CManager::GetInstance()->GetInputKeyboard();
 	
 
 	
@@ -204,7 +221,9 @@ void CPlayer::PlayerContoroll(void)
 	
 	if (pKeyboard->GetTrigger(DIK_R) == true)
 	{//W‚Ì‚Ý‰Ÿ‚³‚ê‚½ê‡
-		CObject::Reset();
+		m_pos = D3DXVECTOR3(640.0f, 600.0f, 0.0f);
+		m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+		m_WorldPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	}
 	if (pKeyboard->GetPress(DIK_W) == false && pKeyboard->GetPress(DIK_A) == false && pKeyboard->GetPress(DIK_D) == false && m_bJump == false)
 	{
@@ -286,16 +305,17 @@ void CPlayer::ScloolWorld(void)
 {
 	if (m_pos.x > 920.0f)
 	{
+
+		m_WorldPos.x -= m_move.x *10.0f;
 		m_pos.x = 920.0f;
 
-		m_WorldPos.x -= m_move.x;
 
 	}
 	else if (m_pos.x < 360.0f)
 	{
 		m_pos.x = 360.0f;
 
-		m_WorldPos.x -= m_move.x;
+		m_WorldPos.x -= m_move.x*10.0f;
 
 	}
 	if (m_pos.y >  500.0f)

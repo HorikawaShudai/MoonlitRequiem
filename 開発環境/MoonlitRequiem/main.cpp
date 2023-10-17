@@ -68,9 +68,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	DWORD dwExectLastTime;
 
 	CManager *pManager = NULL;
-	pManager = new CManager;
+	pManager = CManager::GetInstance();
 	//‰Šú‰»ˆ—
-	if (FAILED(pManager->Init(hInstance,hWnd, TRUE)))
+	if (FAILED(CManager::GetInstance()->Init(hInstance,hWnd, TRUE)))
 	{
 		return - 1;
 	}

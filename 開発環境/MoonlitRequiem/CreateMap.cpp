@@ -67,7 +67,7 @@ void CCsvMap::CreateMap(void)
 			case MAP_NONE:
 				break;
 			case MAP_FLORE:
-				CBlock::Create(D3DXVECTOR3(BLOCK_HEIGHT *nCntH, BLOCK_WIDTH *nWCnt, 0.0f));
+				CBlock::Create(D3DXVECTOR3(BLOCK_HEIGHT*2 *nCntH, BLOCK_WIDTH*2 *nWCnt, 0.0f));
 				break;
 			}
 		}

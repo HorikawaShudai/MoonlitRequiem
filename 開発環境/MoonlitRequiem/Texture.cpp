@@ -31,7 +31,7 @@ CTexture::~CTexture()
 HRESULT CTexture::Load()
 {
 
-	CRenderer *pRenderer = CManager::GetRenderer();
+	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 	//デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 

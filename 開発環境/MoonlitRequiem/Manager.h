@@ -50,19 +50,21 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static CRenderer *GetRenderer(void);
-	static CInputKeyboard *GetInputKeyboard(void);
-	static CTexture *GetpTexture(void);
-	static CFade *GetpFade(void);
 	static LPDIRECT3DTEXTURE9 m_aTextureBg;
-	static void SetMode(CScene::MODE mode);
-	static CScene::MODE GetMode(void);
+	void SetMode(CScene::MODE mode);
+	static CManager *GetInstance();
+	CRenderer *GetRenderer(void);
+	CInputKeyboard *GetInputKeyboard(void);
+	CTexture *GetpTexture(void);
+	CFade *GetpFade(void);
+	CScene::MODE GetMode(void);
 private:
-	static CRenderer *m_pRenderer;
-	static CInputKeyboard *m_pInputKeyboard;
-	static CTexture  *m_pTexture;
-	static CScene *m_pScene;
-	static CFade *m_pFade;
+	static CManager *m_pManager;
+	CRenderer *m_pRenderer;
+	CInputKeyboard *m_pInputKeyboard;
+	CTexture  *m_pTexture;
+	CScene *m_pScene;
+	CFade *m_pFade;
 
 };
 

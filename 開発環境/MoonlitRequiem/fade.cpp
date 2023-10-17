@@ -29,8 +29,7 @@ HRESULT CFade::Init(void)
 	m_Fade = FADE_NONE;
 	m_ColorFade = D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f);
 
-	CManager Renderer;
-	CRenderer *pRenderer = Renderer.GetRenderer();
+	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 	//デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
@@ -97,7 +96,7 @@ void CFade::Update(void)
 			{
 				m_ColorFade.a = 1.0f;
 				m_Fade = FADE_IN;
-				CManager::SetMode(m_ModeNext);
+				CManager::GetInstance()->SetMode(m_ModeNext);
 			}
 		}
 
@@ -121,7 +120,7 @@ void CFade::Update(void)
 void CFade::Draw(void)
 {
 	CManager Renderer;
-	CRenderer *pRenderer = Renderer.GetRenderer();
+	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 	//デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 

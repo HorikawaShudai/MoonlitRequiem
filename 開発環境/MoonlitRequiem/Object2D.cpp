@@ -40,7 +40,7 @@ HRESULT CObject2D::Init(void)
 	//m_pos = D3DXVECTOR3(640.0f, 600.0f, 0.0f);
 
 	CManager Renderer;
-	CRenderer *pRenderer = Renderer.GetRenderer();
+	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 	//デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
@@ -109,8 +109,8 @@ void CObject2D::Uninit(void)
 void CObject2D::Draw(void)
 {
 	CManager Renderer;
-	CTexture *pTexture = CManager::GetpTexture();
-	CRenderer *pRenderer = Renderer.GetRenderer();
+	CTexture *pTexture = CManager::GetInstance()->GetpTexture();
+	CRenderer *pRenderer = CManager::GetInstance()->GetRenderer();
 	//デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 	m_pTexture = pTexture->GetAddress(m_TexId);
@@ -163,10 +163,10 @@ void CObject2D::SetPlayerPos(D3DXVECTOR3 pos, float Height, float Width)
 	//頂点バッファをロックし頂点情報へのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 	//頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(m_pos.x - Height, m_pos.y - Width, 0.0f);
-	pVtx[1].pos = D3DXVECTOR3(m_pos.x + Height, m_pos.y - Width, 0.0f);
-	pVtx[2].pos = D3DXVECTOR3(m_pos.x - Height, m_pos.y, 0.0f);
-	pVtx[3].pos = D3DXVECTOR3(m_pos.x + Height, m_pos.y, 0.0f);
+	pVtx[0].pos = D3DXVECTOR3(m_pos.x - Width, m_pos.y - Height, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(m_pos.x + Width, m_pos.y - Height, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(m_pos.x - Width, m_pos.y, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(m_pos.x + Width, m_pos.y, 0.0f);
 
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();

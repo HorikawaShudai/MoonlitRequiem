@@ -53,9 +53,9 @@ void CTitle::Uninit(void)
 }
 void CTitle::Update(void)
 {
-	CInputKeyboard *pKeyboard = CManager::GetInputKeyboard();
+	CInputKeyboard *pKeyboard = CManager::GetInstance()->GetInputKeyboard();
 
-	CFade *pFade = CManager::GetpFade();
+	CFade *pFade = CManager::GetInstance()->GetpFade();
 
 	CFade::FADE StateFade;
 	StateFade = pFade->GetFade();

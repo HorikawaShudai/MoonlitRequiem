@@ -18,12 +18,8 @@
 //====================================================
 //静的メンバ変数の初期化
 //====================================================
-CRenderer *CManager::m_pRenderer = NULL;
-CInputKeyboard *CManager::m_pInputKeyboard = NULL;
-CTexture *CManager::m_pTexture = NULL;
-CScene *CManager::m_pScene = NULL;
-CFade *CManager::m_pFade = NULL;
 LPDIRECT3DTEXTURE9 CManager::m_aTextureBg = NULL;
+CManager *CManager::m_pManager = NULL;
 //====================================================
 //コンストラクタ
 //====================================================
@@ -126,6 +122,11 @@ void CManager::Uninit(void)
 		delete m_pScene;
 
 	}
+	if (m_pManager != NULL)
+	{
+		m_pManager = NULL;
+		delete m_pManager;
+	}
 }
 
 //====================================================
@@ -216,6 +217,18 @@ void CManager::SetMode(CScene::MODE mode)
 CScene::MODE CManager::GetMode(void)
 {
 	return m_pScene->m_mode;
+}
+
+CManager *CManager::GetInstance()
+{
+	if (m_pManager == NULL)
+	{
+		return m_pManager = new CManager;
+	}
+	else
+	{
+		return m_pManager;
+	}
 }
 
 
