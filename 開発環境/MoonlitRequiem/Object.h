@@ -9,7 +9,7 @@
 
 #include "main.h"
 
-#define NUM_POLYGON (2048)
+#define NUM_POLYGON (8000)
 #define NUM_PRIORITY (8)
 
 class CObject

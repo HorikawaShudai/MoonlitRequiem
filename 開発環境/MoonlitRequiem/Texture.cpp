@@ -12,7 +12,7 @@
 CTexture::TEXINFO CTexture::m_aTexInfo[TEX_MAX] =
 {
 	{ "data\\TEXTURE\\player001.png" },
-    { "data\\TEXTURE\\tuti001.jpg" }
+    { "data\\TEXTURE\\Renga.png" }
 };
 
 

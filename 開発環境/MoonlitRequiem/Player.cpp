@@ -10,6 +10,7 @@
 #include "Renderer.h"
 #include "Input.h"
 #include "Block.h"
+#include "CreateMap.h"
 
 
 #define PLAYER_HEIGHT	(100.0f)
@@ -107,28 +108,29 @@ void CPlayer::Update(void)
 	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 
 
-	if (m_pos.y > 720.0f)
-	{
-		/*m_move.y = 0.0f;
-		m_pos.y = m_posOld.y;
-		m_bJump = false;
-		m_JumpCnt = 0;*/
-	}
-	if (m_pos.y - PLAYER_HEIGHT < 0.0f)
-	{
-		m_move.y = 0.0f;
-		m_pos.y = m_posOld.y;
-	}
-	if (m_pos.x - PLAYER_WIDTH < 0.0f)
-	{
-		m_move.x = 0.0f;
-		m_pos.x = m_posOld.x;
-	}
-	if (m_pos.x + PLAYER_WIDTH > 1280.0f)
-	{
-		m_move.x = 0.0f;
-		m_pos.x = m_posOld.x;
-	}
+	//if (m_pos.y > 720.0f)
+	//{
+	//	/*m_move.y = 0.0f;
+	//	m_pos.y = m_posOld.y;
+	//	m_bJump = false;
+	//	m_JumpCnt = 0;*/
+	//}
+	//if (m_pos.y - PLAYER_HEIGHT < 0.0f)
+	//{
+	//	m_move.y = 0.0f;
+	//	m_pos.y = m_posOld.y;
+	//}
+	//if (m_pos.x - PLAYER_WIDTH < 0.0f)
+	//{
+	//	m_move.x = 0.0f;
+	//	m_pos.x = m_posOld.x;
+	//}
+	//if (m_pos.x + PLAYER_WIDTH > 1280.0f)
+	//{
+	//	m_move.x = 0.0f;
+	//	m_pos.x = m_posOld.x;
+	//}
+
 	if (CBlock::CollisionBlock(m_posOld, m_pos,PLAYER_HEIGHT, PLAYER_WIDTH) == TRUE)
 	{
 
@@ -151,6 +153,36 @@ void CPlayer::Update(void)
 		SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 
 	}
+
+	//ƒGƒŠƒAˆÚ“®ˆ—
+
+	D3DXVECTOR3 KeepPos = CCsvMap::CollisionTp(m_pos, m_WorldPos);
+	if (KeepPos != m_pos)
+	{
+		int nPuttern = CCsvMap::GetType(KeepPos);
+		switch (nPuttern)
+		{
+		case CCsvMap::TP_LEFT:
+			m_WorldPos.x += 1280.0f;
+			m_pos = D3DXVECTOR3(1210.0f, m_pos.y, 0.0f);
+			//SetPlayerPos(D3DXVECTOR3(1210.0f, m_pos.y, 0.0f), PLAYER_HEIGHT, PLAYER_WIDTH);
+			break;
+		case CCsvMap::TP_RIGHT:
+			m_WorldPos.x -= 1280.0f;
+			m_pos = D3DXVECTOR3(70.0f, m_pos.y, 0.0f);
+			//SetPlayerPos(D3DXVECTOR3(70.0f, m_pos.y, 0.0f), PLAYER_HEIGHT, PLAYER_WIDTH);
+			break;
+		case CCsvMap::TP_UP:
+			break;
+		case CCsvMap::TP_DOWN:
+			break;
+		}
+		
+	}
+	
+
+
+
 	//CItem::CollisionItem(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 	m_move.x *= 0.06f;
 	PlayerTexture();
@@ -303,17 +335,17 @@ void CPlayer::PlayerTexture(void)
 //========================================================================================================
 void CPlayer::ScloolWorld(void)
 {
-	if (m_pos.x > 920.0f)
+	if (m_pos.x > 1130.0f)
 	{
 
 		m_WorldPos.x -= m_move.x *10.0f;
-		m_pos.x = 920.0f;
+		m_pos.x = 1130.0f;
 
 
 	}
-	else if (m_pos.x < 360.0f)
+	else if (m_pos.x < 150.0f)
 	{
-		m_pos.x = 360.0f;
+		m_pos.x = 150.0f;
 
 		m_WorldPos.x -= m_move.x*10.0f;
 

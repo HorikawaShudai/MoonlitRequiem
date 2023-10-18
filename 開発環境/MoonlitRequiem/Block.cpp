@@ -45,7 +45,7 @@ HRESULT CBlock::Init(void)
 	m_posWorld = m_pos;
 
 	CTexture *pTexture = CManager::GetInstance()->GetpTexture();
-	m_TexId = pTexture->Regist("data\\TEXTURE\\tuti001.jpg");
+	m_TexId = pTexture->Regist("data\\TEXTURE\\Renga.png");
 	//BindTexture(m_pTexture);
 	SetType(TYPE_BLOCK);
 

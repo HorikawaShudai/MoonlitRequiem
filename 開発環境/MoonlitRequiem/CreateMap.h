@@ -9,22 +9,37 @@
 #include "main.h"
 
 //マクロ定義
-#define MAX_HEIGHT (100)
-#define MAX_WHIGHT (100)
+#define MAX_HEIGHT (200)
+#define MAX_WHIGHT (200)
+#define TP_WHIGHT (20)
+#define TP_HEIGHT (180)
+#define MAX_TP (10)
 
 class CCsvMap
 {
 public:
-	//列挙型のデータ宣言
 	typedef enum
 	{
-		MAP_NONE = 0,	//空気
-		MAP_FLORE,		//床
-		MAP_MAX,
-	}MAP_KIND; 
-	//プロトタイプ宣言
+		TP_RIGHT = 0,
+		TP_LEFT,
+		TP_UP,
+		TP_DOWN,
+		TP_NONE
+	}TPVEC;
+	typedef struct
+	{
+		int NextNum;
+		TPVEC TpVec;
+		D3DXVECTOR3 TpPos;
+		D3DXVECTOR3 NextTp;
+	}TELEPORT;
+
 	static void LoadMap(void);
 	static void CreateMap(void);
+	static D3DXVECTOR3 CollisionTp(D3DXVECTOR3 Pos, D3DXVECTOR3 Worldpos);
+	static D3DXVECTOR3 GetNextTp(int NextNum) { return m_TpData[NextNum].TpPos; };
+	static TPVEC GetType(D3DXVECTOR3 TpPos);
+	
 private:
 	typedef struct
 	{
@@ -32,6 +47,7 @@ private:
 		int nHeight;
 		int nWhight;
 	}DATA;
+	static TELEPORT m_TpData[MAX_TP];
 	static DATA m_MapData;
 };
 #endif
