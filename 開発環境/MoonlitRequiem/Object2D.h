@@ -28,6 +28,7 @@ public:
 
 	void SetPos(D3DXVECTOR3 pos, float Height, float Width);
 	void SetPlayerPos(D3DXVECTOR3 pos, float Height, float Width);
+	void SetEnemyPos(D3DXVECTOR3 pos, float Height, float Width);
 	void SetSize(float Height,float Width);
 	void SetCol(D3DXCOLOR col);
 	void SetRot(float rot);

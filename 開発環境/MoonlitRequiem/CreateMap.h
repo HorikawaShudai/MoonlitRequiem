@@ -37,6 +37,7 @@ public:
 	static void LoadMap(void);
 	static void CreateMap(void);
 	static D3DXVECTOR3 CollisionTp(D3DXVECTOR3 Pos, D3DXVECTOR3 Worldpos);
+	static bool BossSpown(D3DXVECTOR3 pPos, D3DXVECTOR3 pWorldpos);
 	static D3DXVECTOR3 GetNextTp(int NextNum) { return m_TpData[NextNum].TpPos; };
 	static TPVEC GetType(D3DXVECTOR3 TpPos);
 	
@@ -49,5 +50,6 @@ private:
 	}DATA;
 	static TELEPORT m_TpData[MAX_TP];
 	static DATA m_MapData;
+	static D3DXVECTOR3 m_BossTrigger;
 };
 #endif

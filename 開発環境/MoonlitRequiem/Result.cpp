@@ -21,7 +21,7 @@ CResult::~CResult()
 
 HRESULT CResult::Init(void)
 {
-	CObject2D::Create(TYPE_BG,0);
+	//CObject2D::Create(TYPE_BG,0);
 
 	return S_OK;
 }

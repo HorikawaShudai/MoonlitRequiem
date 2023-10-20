@@ -23,7 +23,7 @@ CTitle::~CTitle()
 
 HRESULT CTitle::Init(void)
 {
-	CObject2D::Create(TYPE_BG,0);
+	//CObject2D::Create(TYPE_BG,0);
 	CSound::Play(CSound::SOUND_LABEL_BGM000);
 
 	return S_OK;

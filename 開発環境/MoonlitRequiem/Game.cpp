@@ -19,6 +19,8 @@
 //Ã“Iƒƒ“ƒo•Ï”‚Ì‰Šú‰»
 //====================================================
 bool CGame::bPouse =false;
+CGame::PHASE CGame::pPhase  =PHASE_NORMAL;
+
 CGame::CGame()
 {
 

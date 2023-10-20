@@ -7,6 +7,9 @@
 #include "CreateMap.h"
 #include "Block.h"
 #include "Player.h"
+#include "Enemy.h"
+#include "Boss.h"
+#include "Game.h"
 #include <stdio.h>
 #include <cstdlib>
 
@@ -14,6 +17,7 @@
 
 
 CCsvMap::DATA CCsvMap::m_MapData;
+D3DXVECTOR3 CCsvMap::m_BossTrigger;
 CCsvMap::TELEPORT CCsvMap::m_TpData[MAX_TP];
 //============================================================================
 //“Ç‚Ýž‚Ýˆ—
@@ -67,26 +71,10 @@ void CCsvMap::CreateMap(void)
 			case 0:
 				break;
 			case 1:
-				m_TpData[0].NextNum = 1;
-				m_TpData[0].TpPos = D3DXVECTOR3(BLOCK_HEIGHT * 2 * nCntH, BLOCK_WIDTH * 2 * nWCnt, 0.0f);
-				m_TpData[0].TpVec = TP_RIGHT;
+				m_BossTrigger = D3DXVECTOR3(BLOCK_HEIGHT * 2 * nCntH, BLOCK_WIDTH * 2 * nWCnt, 0.0f);
 				break;
-			case 2:
-				m_TpData[1].NextNum = 0;
-				m_TpData[1].TpPos = D3DXVECTOR3(BLOCK_HEIGHT * 2 * nCntH, BLOCK_WIDTH * 2 * nWCnt, 0.0f);
-				m_TpData[1].TpVec = TP_LEFT;
-
-			case 3:
-				m_TpData[2].NextNum = 3;
-				m_TpData[2].TpPos = D3DXVECTOR3(BLOCK_HEIGHT * 2 * nCntH, BLOCK_WIDTH * 2 * nWCnt, 0.0f);
-				m_TpData[2].TpVec = TP_RIGHT;
-
-				break;
-			case 4:
-				m_TpData[3].NextNum = 2;
-				m_TpData[3].TpPos = D3DXVECTOR3(BLOCK_HEIGHT * 2 * nCntH, BLOCK_WIDTH * 2 * nWCnt, 0.0f);
-				m_TpData[3].TpVec = TP_LEFT;
-
+			case 21:
+				CEnemy::Create(D3DXVECTOR3(BLOCK_HEIGHT * 2 * nCntH, BLOCK_WIDTH * 2 * nWCnt + 15.0f, 0.0f));
 				break;
 			case 11:
 				CBlock::Create(D3DXVECTOR3(BLOCK_HEIGHT*2 *nCntH, BLOCK_WIDTH*2 *nWCnt, 0.0f));
@@ -107,6 +95,20 @@ D3DXVECTOR3 CCsvMap::CollisionTp(D3DXVECTOR3 Pos, D3DXVECTOR3 Worldpos)
 
 	}
 	return Pos;
+}
+
+bool CCsvMap::BossSpown(D3DXVECTOR3 pPos, D3DXVECTOR3 pWorldpos)
+{
+	if (pPos.x - pWorldpos.x > m_BossTrigger.x - TP_WHIGHT && pPos.x - pWorldpos.x <m_BossTrigger.x + TP_WHIGHT && pPos.y - pWorldpos.y > m_BossTrigger.y - TP_HEIGHT&& pPos.y - pWorldpos.y < m_BossTrigger.y + 20.0f)
+	{
+		if (CGame::GetPhase() == CGame::PHASE_NORMAL)
+		{
+			CBoss::Create(m_BossTrigger);
+			CGame::SetPhase(CGame::PHASE_BOSS);
+		}
+		return  true;
+	}
+	return false;
 }
 
 CCsvMap::TPVEC CCsvMap::GetType(D3DXVECTOR3 TpPos)

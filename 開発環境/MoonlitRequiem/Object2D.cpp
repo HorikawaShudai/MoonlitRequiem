@@ -9,6 +9,10 @@
 #include "Manager.h"
 #include "Player.h"
 #include "Block.h"
+#include "Enemy.h"
+#include "Bullet.h"
+#include "Boss.h"
+#include "Bg.h"
 
 
 #define POLYGON_HEIGHT	(30.0f)
@@ -171,6 +175,25 @@ void CObject2D::SetPlayerPos(D3DXVECTOR3 pos, float Height, float Width)
 	//頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
 }
+//====================================================
+//ポリゴンの位置の設定
+//====================================================
+void CObject2D::SetEnemyPos(D3DXVECTOR3 pos, float Height, float Width)
+{
+	m_pos = pos;
+
+	VERTEX_2D *pVtx;
+	//頂点バッファをロックし頂点情報へのポインタを取得
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	//頂点座標の設定
+	pVtx[0].pos = D3DXVECTOR3(m_pos.x - Width, m_pos.y - Height, 0.0f);
+	pVtx[1].pos = D3DXVECTOR3(m_pos.x + Width, m_pos.y - Height, 0.0f);
+	pVtx[2].pos = D3DXVECTOR3(m_pos.x - Width, m_pos.y, 0.0f);
+	pVtx[3].pos = D3DXVECTOR3(m_pos.x + Width, m_pos.y, 0.0f);
+
+	//頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+}
 
 
 //====================================================
@@ -207,6 +230,27 @@ CObject2D *CObject2D::Create(TYPE type2D,int type)
 		break;
 	case TYPE_BLOCK:
 		pObject2D = new CBlock;
+
+		pObject2D->Init();
+		break;
+
+	case TYPE_ENEMY:
+		pObject2D = new CEnemy;
+
+		pObject2D->Init();
+		break;
+	case TYPE_BULLET:
+		pObject2D = new CBullet;
+
+		pObject2D->Init();
+		break;
+	case TYPE_BOSS:
+		pObject2D = new CBoss;
+
+		pObject2D->Init();
+		break;
+	case TYPE_BG:
+		pObject2D = new CBg;
 
 		pObject2D->Init();
 		break;

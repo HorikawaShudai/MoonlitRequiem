@@ -1,0 +1,54 @@
+//=========================================================================================================
+//
+//2DêÍópÇÃÉ|ÉäÉSÉìÇÃèàóù
+//Author:ñxêÏîãëÂ
+//
+//=========================================================================================================
+#ifndef _BOSS_H_
+#define _BOSS_H_
+
+#include "main.h"
+#include "Object2D.h"
+
+#define BOSS_HEIGHT (300.0f)
+#define BOSS_WIDTH	 (300.0f)
+
+class CBoss : public CObject2D
+{
+public:
+	CBoss(int nPriority = 2);
+	~CBoss();
+	typedef enum
+	{
+		TYPE_NONE = 0,
+		TYPE_WALK,
+		TYPE_JUMP,
+		TYPE_ATTACK,
+		TYPE_ROLL
+	}BOSS_TYPE;
+	HRESULT Init(void);
+	void Uninit(void);
+	void Update(void);
+	void Draw(void);
+	static void Create(D3DXVECTOR3 pos);
+	void BossContoroll(void);
+	void BossTexture(void);
+	static bool ColisionBoss(D3DXVECTOR3 pos);
+	static void DamageBoss(int nDamage);
+	static D3DXVECTOR3 m_pos;
+	D3DXVECTOR3 m_posOld;
+
+private:
+	D3DXVECTOR3 m_posWorld;
+	D3DXVECTOR3 m_move;
+	int m_nCntAnim;
+	int m_nCntPattern;
+	int BossRot;
+	int m_JumpCnt;
+	static int m_Life;
+	bool m_bJump;
+	static LPDIRECT3DTEXTURE9 m_pTexture;
+	BOSS_TYPE m_Type;
+};
+
+#endif

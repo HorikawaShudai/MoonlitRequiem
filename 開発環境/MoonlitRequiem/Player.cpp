@@ -11,7 +11,7 @@
 #include "Input.h"
 #include "Block.h"
 #include "CreateMap.h"
-
+#include "Bullet.h"
 
 #define PLAYER_HEIGHT	(100.0f)
 #define PLAYER_WIDTH	(30.0f)
@@ -38,7 +38,7 @@ CPlayer::CPlayer()
 	m_Type = TYPE_NONE;
 	m_bJump = false;
 	m_JumpCnt = 0;
-
+	m_ScloolMove = true;
 }
 //====================================================
 //デストラクタ
@@ -155,38 +155,47 @@ void CPlayer::Update(void)
 	}
 
 	//エリア移動処理
-
-	D3DXVECTOR3 KeepPos = CCsvMap::CollisionTp(m_pos, m_WorldPos);
-	if (KeepPos != m_pos)
 	{
-		int nPuttern = CCsvMap::GetType(KeepPos);
-		switch (nPuttern)
-		{
-		case CCsvMap::TP_LEFT:
-			m_WorldPos.x += 1280.0f;
-			m_pos = D3DXVECTOR3(1210.0f, m_pos.y, 0.0f);
-			//SetPlayerPos(D3DXVECTOR3(1210.0f, m_pos.y, 0.0f), PLAYER_HEIGHT, PLAYER_WIDTH);
-			break;
-		case CCsvMap::TP_RIGHT:
-			m_WorldPos.x -= 1280.0f;
-			m_pos = D3DXVECTOR3(70.0f, m_pos.y, 0.0f);
-			//SetPlayerPos(D3DXVECTOR3(70.0f, m_pos.y, 0.0f), PLAYER_HEIGHT, PLAYER_WIDTH);
-			break;
-		case CCsvMap::TP_UP:
-			break;
-		case CCsvMap::TP_DOWN:
-			break;
-		}
-		
+		//D3DXVECTOR3 KeepPos = CCsvMap::CollisionTp(m_pos, m_WorldPos);
+		//if (KeepPos != m_pos)
+		//{
+		//	int nPuttern = CCsvMap::GetType(KeepPos);
+		//	switch (nPuttern)
+		//	{
+		//	case CCsvMap::TP_LEFT:
+		//		m_WorldPos.x += 1280.0f;
+		//		m_pos = D3DXVECTOR3(1210.0f, m_pos.y, 0.0f);
+		//		//SetPlayerPos(D3DXVECTOR3(1210.0f, m_pos.y, 0.0f), PLAYER_HEIGHT, PLAYER_WIDTH);
+		//		break;
+		//	case CCsvMap::TP_RIGHT:
+		//		m_WorldPos.x -= 1280.0f;
+		//		m_pos = D3DXVECTOR3(70.0f, m_pos.y, 0.0f);
+		//		//SetPlayerPos(D3DXVECTOR3(70.0f, m_pos.y, 0.0f), PLAYER_HEIGHT, PLAYER_WIDTH);
+		//		break;
+		//	case CCsvMap::TP_UP:
+		//		break;
+		//	case CCsvMap::TP_DOWN:
+		//		break;
+		//	}
+		//	
+		//}
 	}
 	
-
+	
+	if (CCsvMap::BossSpown(m_pos, m_WorldPos) == true)
+	{
+		SetScloolMove(false);
+	}
 
 
 	//CItem::CollisionItem(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 	m_move.x *= 0.06f;
 	PlayerTexture();
-	ScloolWorld();
+	if (m_ScloolMove == true)
+	{
+		ScloolWorld();
+
+	}
 	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 
 }
@@ -242,8 +251,18 @@ void CPlayer::PlayerContoroll(void)
 		m_JumpCnt++;
 	}
 	//攻撃操作
-	if (pKeyboard->GetTrigger(DIK_B) == true && m_Type != TYPE_JUMP)
+	if (pKeyboard->GetTrigger(DIK_B) == true)
 	{//Bのみ押された場合
+		if (PlayerRot == 0)
+		{
+			CBullet::Create(D3DXVECTOR3(m_pos.x +15.0f, m_pos.y - 50.0f, 0.0f), D3DXVECTOR3(14.0f, 0.0f, 0.0f), CBullet::TYPE_BOW, PlayerRot);
+
+		}
+		else
+		{
+			CBullet::Create(D3DXVECTOR3(m_pos.x - 15.0f, m_pos.y - 50.0f, 0.0f), D3DXVECTOR3(-14.0f, 0.0f, 0.0f), CBullet::TYPE_BOW, PlayerRot);
+
+		}
 	}
 	if (pKeyboard->GetTrigger(DIK_N) == true && m_Type != TYPE_JUMP)
 	{//Nのみ押された場合
@@ -331,26 +350,26 @@ void CPlayer::PlayerTexture(void)
 }
 
 //========================================================================================================
-//攻撃がヒットしてしまったとき
+//画面スクロール
 //========================================================================================================
 void CPlayer::ScloolWorld(void)
 {
-	if (m_pos.x > 1130.0f)
+	if (m_pos.x > 800.0f)
 	{
 
 		m_WorldPos.x -= m_move.x *10.0f;
-		m_pos.x = 1130.0f;
+		m_pos.x = 800.0f;
 
 
 	}
-	else if (m_pos.x < 150.0f)
+	else if (m_pos.x < 480.0f)
 	{
-		m_pos.x = 150.0f;
+		m_pos.x = 480.0f;
 
 		m_WorldPos.x -= m_move.x*10.0f;
 
 	}
-	if (m_pos.y >  500.0f)
+	if (m_pos.y >  500.0f &&m_WorldPos.y > -2490.0f)
 	{
 		m_pos.y = 500.0f;
 
@@ -369,4 +388,8 @@ void CPlayer::ScloolWorld(void)
 D3DXVECTOR3 CPlayer::GetWorld(void)
 {
 	return m_WorldPos;
+}
+void CPlayer::SetScloolMove(bool CanMove)
+{
+	m_ScloolMove = CanMove;
 }
