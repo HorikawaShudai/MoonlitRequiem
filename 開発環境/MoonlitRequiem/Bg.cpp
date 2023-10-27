@@ -14,7 +14,7 @@
 #define BG_WIDTH	(360.0f)
 
 
-
+D3DXVECTOR3 CBg::m_texMove;
 //====================================================
 //コンストラクタ
 //====================================================
@@ -23,6 +23,7 @@ CBg::CBg(int nPriority):CObject2D(nPriority)
 	m_pos = D3DXVECTOR3 (0.0f,0.0f,0.0f);
 	m_move = D3DXVECTOR3 (0.0f,0.0f,0.0f);
 	m_Texpos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_texMove = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 //====================================================
 //デストラクタ
@@ -57,6 +58,12 @@ HRESULT CBg::Init(void)
 	if (mode == CScene::MODE_TITLE)
 	{
 		m_TexId = pTexture->Regist("data\\TEXTURE\\SampleTitle.jpg");
+		BindTexture(pTexture->GetAddress(m_TexId));
+
+	}
+	if (mode == CScene::MODE_GAME)
+	{
+		m_TexId = pTexture->Regist("data\\TEXTURE\\GameBg.png");
 		BindTexture(pTexture->GetAddress(m_TexId));
 
 	}
@@ -100,11 +107,11 @@ void CBg::Uninit(void)
 		m_pVtxBuff->Release();
 		m_pVtxBuff = NULL;
 	}
-	if (m_pTexture != NULL)
-	{
-		m_pTexture->Release();
-		m_pTexture = NULL;
-	}
+	//if (m_pTexture != NULL)
+	//{
+	//	m_pTexture->Release();
+	//	m_pTexture = NULL;
+	//}
 
 }
 
@@ -116,7 +123,7 @@ void CBg::Update(void)
 
 	m_Texpos += m_move;
 	m_Texpos += m_moveTex;
-	AutoScroll(m_moveTex.x, m_moveTex.y);
+	AutoScroll(m_texMove.x, m_texMove.y);
 	//SetScroll(m_Texpos.x, m_Texpos.y);
 }
 

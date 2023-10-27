@@ -37,19 +37,17 @@ public:
 
 	static CObject2D *Create(TYPE type2D,int type);
 	void BindTexture(LPDIRECT3DTEXTURE9 pTexture);
-	
+	void AddMoveTex(float moveX, float moveY) { m_moveTex += D3DXVECTOR3(moveX, moveY, 0.0f); };
 	void AutoScroll(float hMoveTex, float wMoveTex);
 	D3DXVECTOR3 m_moveTex;
 	LPDIRECT3DTEXTURE9 m_pTexture;
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;
-
 protected:
 private:
 	D3DXVECTOR3 m_pos;
 	int m_nNumObject2D;
 	int m_nCntAnim;
 	int m_nCntPattern;
-
 };
 
 #endif

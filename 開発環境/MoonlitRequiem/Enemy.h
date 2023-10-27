@@ -10,8 +10,8 @@
 #include "main.h"
 #include "Object2D.h"
 
-#define ENEMY_HEIGHT (70.0f)
-#define ENEMY_WIDTH	 (40.0f)
+#define ENEMY_HEIGHT (60.0f)
+#define ENEMY_WIDTH	 (30.0f)
 
 class CEnemy : public CObject2D
 {
@@ -34,7 +34,8 @@ public:
 	void EnemyContoroll(void);
 	void EnemyTexture(void);
 	static bool ColisionEnemy(D3DXVECTOR3 pos);
-	static D3DXVECTOR3 m_pos;
+	static D3DXVECTOR3 m_Createpos;
+	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_posOld;
 
 private:

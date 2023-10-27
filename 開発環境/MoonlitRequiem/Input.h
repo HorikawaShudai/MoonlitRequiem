@@ -17,6 +17,7 @@
 
 //マクロ定義
 #define NUM_KEY_MAX (256)		//キーの最大数
+#define NUM_MOUSE_MAX (4)
 
 class CInput
 {
@@ -29,7 +30,9 @@ public:
 
 protected:
 	static LPDIRECTINPUT8 m_pInput;
+	static LPDIRECTINPUT8 m_pMouse;
 	LPDIRECTINPUTDEVICE8 m_pDevice;
+	LPDIRECTINPUTDEVICE8 m_pDIMouse;
 
 private:
 };
@@ -65,5 +68,31 @@ public:
 private:
 	XINPUT_STATE m_aGamePadState;
 	XINPUT_STATE m_aKeyStateTrigger;
+};
+
+class CInputMouse : public CInput
+{
+public:
+	typedef enum
+	{
+		LEFT_CLLICK = 0,
+		RIGHT_CLLICK,
+		WHEEL_CLLICK,
+		MAX_CLLICK
+	}TYPE_CLLICK;
+	CInputMouse();
+	~CInputMouse();
+	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
+	void Uninit(void);
+	void Update(void);
+	bool GetPress(int nKey);
+	bool GetTrigger(int nKey);
+
+private:
+	DIPROPDWORD m_diprop;
+	BOOL m_bAppActive = FALSE;
+	DIMOUSESTATE m_zdiMouseState;
+	DIMOUSESTATE m_zdiMouseStateTrigger;
+
 };
 #endif

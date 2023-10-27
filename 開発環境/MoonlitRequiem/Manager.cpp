@@ -48,6 +48,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pInputKeyboard = new CInputKeyboard;
 	m_pInputKeyboard->Init(hInstance, hWnd);
 
+	m_pInputMouse = new CInputMouse;
+	m_pInputMouse->Init(hInstance, hWnd);
+
 	//デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = m_pRenderer->GetDevice();
 
@@ -90,6 +93,12 @@ void CManager::Uninit(void)
 		m_pInputKeyboard->Uninit();
 		//delete m_pInputKeyboard;
 		m_pInputKeyboard = NULL;
+	}
+	if (m_pInputMouse != NULL)
+	{			
+		m_pInputMouse->Uninit();
+		//delete m_pInputKeyboard;
+		m_pInputMouse = NULL;
 	}
 
 	if (m_aTextureBg != NULL)
@@ -137,6 +146,7 @@ void CManager::Update(void)
 	m_pRenderer->Update();
 	m_pFade->Update();
 	m_pInputKeyboard->Update();
+	m_pInputMouse->Update();
 	m_pScene->Update();
 }
 
@@ -165,6 +175,11 @@ CInputKeyboard *CManager::GetInputKeyboard(void)
 {
 	return m_pInputKeyboard;
 }
+CInputMouse *CManager::GetInputMouse(void)
+{
+	return m_pInputMouse;
+}
+
 
 CTexture *CManager::GetpTexture(void)
 {

@@ -20,6 +20,9 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 void Uninit(void);
 void Update(void);
 void Draw(void);
+bool GetCursorVisibility();
+void MoveCursorVisibility(HWND hWnd);
+bool CursorVisual;
 
 //=========================================================================================================
 //メイン関数
@@ -80,7 +83,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hInstancePrev, LPSTR lpCmdLine
 	//ウィンドウの表示
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
-	
+	while (CursorVisual = ShowCursor(FALSE) >= 0);
 
 	//メッセージループ
 while (1)
@@ -111,6 +114,8 @@ while (1)
 			pManager->Draw();
 		}
 	}
+	MoveCursorVisibility(hWnd);
+
 }
 
 if (pManager != NULL)
@@ -149,6 +154,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		switch (wParam)
 		{
 		case VK_ESCAPE: //ESCが押されたとき
+			while (CursorVisual = ShowCursor(TRUE) < 0);
+
 			nID = MessageBox(hWnd, "終了しますか？", "終了メッセージ", MB_YESNO);
 			if (nID == IDYES)
 			{//YESが押された場合
@@ -156,10 +163,17 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				DestroyWindow(hWnd);
 				break;
 			}
+			else
+			{
+				while (CursorVisual = ShowCursor(FALSE) >= 0);
+
+			}
 		}
 		break;
 
 	case WM_CLOSE://×ボタンが押されたとき
+		while (CursorVisual = ShowCursor(TRUE) < 0);
+
 		nID = MessageBox(hWnd, "終了しますか？", "終了メッセージ", MB_YESNO);
 		if (nID == IDYES)
 		{//YESが押された場合
@@ -168,14 +182,19 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		}
 		else
 		{//それ以外
+			while (CursorVisual = ShowCursor(FALSE) >= 0);
+
 			return 0;
 		}
 		break;
 
 	case WM_LBUTTONDOWN: //マウスクリックのメッセージ
 		SetFocus(hWnd);
+
 		break;
+
 	}
+
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);//既定の処理を返す
 }
 
@@ -186,7 +205,6 @@ void Uninit(void)
 {
 	//分解能を戻す
 	timeEndPeriod(1);
-	//各種オブジェクトの終了処理
 }
 
 //====================================================
@@ -194,7 +212,7 @@ void Uninit(void)
 //====================================================
 void Update(void)
 {
-	
+
 }
 
 //====================================================
@@ -203,4 +221,34 @@ void Update(void)
 void Draw(void)
 {
 
+}
+
+void MoveCursorVisibility(HWND hWnd)
+{
+	if (GetCursorVisibility() == false)
+	{
+		RECT windowRect;
+		GetClientRect(hWnd, &windowRect); // クライアント領域の座標を取得
+
+		int centerX = (windowRect.right - windowRect.left) / 2;
+		int centerY = (windowRect.bottom - windowRect.top) / 2;
+
+		POINT centerPoint;
+		centerPoint.x = centerX;
+		centerPoint.y = centerY;
+
+		ClientToScreen(hWnd, &centerPoint); // クライアント座標を画面座標に変換
+
+		SetCursorPos(centerPoint.x, centerPoint.y); // カーソルを中心に移動
+	}
+	else if (GetCursorVisibility() == true)
+	{
+
+	}
+	
+}
+bool GetCursorVisibility()
+
+{
+	return CursorVisual;
 }

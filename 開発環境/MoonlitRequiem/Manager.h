@@ -55,6 +55,7 @@ public:
 	static CManager *GetInstance();
 	CRenderer *GetRenderer(void);
 	CInputKeyboard *GetInputKeyboard(void);
+	CInputMouse *GetInputMouse(void);
 	CTexture *GetpTexture(void);
 	CFade *GetpFade(void);
 	CScene::MODE GetMode(void);
@@ -62,6 +63,7 @@ private:
 	static CManager *m_pManager;
 	CRenderer *m_pRenderer;
 	CInputKeyboard *m_pInputKeyboard;
+	CInputMouse *m_pInputMouse;
 	CTexture  *m_pTexture;
 	CScene *m_pScene;
 	CFade *m_pFade;

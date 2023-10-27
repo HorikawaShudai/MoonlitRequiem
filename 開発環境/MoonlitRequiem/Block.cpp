@@ -112,30 +112,48 @@ bool CBlock::CollisionBlock(D3DXVECTOR3 oldpos, D3DXVECTOR3 pos,float Height,flo
 					D3DXVECTOR3 p_pos = pObj->GetPos();
 
 					//’…’n
-					if (p_pos.y - BLOCK_HEIGHT <= pos.y && pos.y <= p_pos.y && p_pos.x - BLOCK_WIDTH <= pos.x && pos.x <= p_pos.x + BLOCK_WIDTH) 
+					if (p_pos.y - BLOCK_HEIGHT <= pos.y && 
+						pos.y <= p_pos.y && 
+						p_pos.x - BLOCK_WIDTH <= pos.x &&
+						pos.x <= p_pos.x + BLOCK_WIDTH) 
 					{
 						return TRUE;
 					}
-					if (p_pos.y - BLOCK_HEIGHT <= pos.y && pos.y <= p_pos.y && p_pos.x - BLOCK_WIDTH <= pos.x- Width && pos.x- Width <= p_pos.x + BLOCK_WIDTH)
+					if (p_pos.y - BLOCK_HEIGHT <= pos.y && 
+						pos.y <= p_pos.y && 
+						p_pos.x - BLOCK_WIDTH <= pos.x- Width && 
+						pos.x- Width <= p_pos.x + BLOCK_WIDTH)
 					{
 						return TRUE;
 					}
-					if (p_pos.y - BLOCK_HEIGHT <= pos.y && pos.y <= p_pos.y && p_pos.x - BLOCK_WIDTH <= pos.x+ Width && pos.x+ Width <= p_pos.x + BLOCK_WIDTH)
+					if (p_pos.y - BLOCK_HEIGHT <= pos.y && 
+						pos.y <= p_pos.y && 
+						p_pos.x - BLOCK_WIDTH <= pos.x+ Width && 
+						pos.x+ Width <= p_pos.x + BLOCK_WIDTH)
 					{
 						return TRUE;
 					}
 					//“ª‚Ô‚Â‚¯‚é
-					else if ((p_pos.y + BLOCK_HEIGHT) > pos.y- Height && (p_pos.x - BLOCK_WIDTH) < pos.x && (p_pos.x + BLOCK_WIDTH) > pos.x && (p_pos.y + BLOCK_HEIGHT) < oldpos.y - Height)
+					else if ((p_pos.y + BLOCK_HEIGHT) > pos.y- Height && 
+						(p_pos.x - BLOCK_WIDTH) < pos.x && 
+						(p_pos.x + BLOCK_WIDTH) > pos.x && 
+						(p_pos.y + BLOCK_HEIGHT) < oldpos.y - Height)
 					{
 						return TRUE;
 					}
 					//“ª‚Ô‚Â‚¯‚é
-					else if ((p_pos.y + BLOCK_HEIGHT) > pos.y - Height && (p_pos.x - BLOCK_WIDTH) < pos.x - Width && (p_pos.x + BLOCK_WIDTH) > pos.x - Width && (p_pos.y + BLOCK_HEIGHT) < oldpos.y - Height)
+					else if ((p_pos.y + BLOCK_HEIGHT) > pos.y - Height && 
+						(p_pos.x - BLOCK_WIDTH) < pos.x - Width && 
+						(p_pos.x + BLOCK_WIDTH) > pos.x - Width && 
+						(p_pos.y + BLOCK_HEIGHT) < oldpos.y - Height)
 					{
 						return TRUE;
 					}
 					//“ª‚Ô‚Â‚¯‚é
-					else if ((p_pos.y + BLOCK_HEIGHT) > pos.y - Height && (p_pos.x - BLOCK_WIDTH) < pos.x + Width && (p_pos.x + BLOCK_WIDTH) > pos.x + Width && (p_pos.y + BLOCK_HEIGHT) < oldpos.y - Height)
+					else if ((p_pos.y + BLOCK_HEIGHT) > pos.y - Height && 
+						(p_pos.x - BLOCK_WIDTH) < pos.x + Width && 
+						(p_pos.x + BLOCK_WIDTH) > pos.x + Width && 
+						(p_pos.y + BLOCK_HEIGHT) < oldpos.y - Height)
 					{
 						return TRUE;
 					}
@@ -171,43 +189,73 @@ bool CBlock::HCollisionBlock(D3DXVECTOR3 oldpos, D3DXVECTOR3 pos, float Height, 
 				if (type == TYPE_BLOCK)
 				{
 					D3DXVECTOR3 p_pos = pObj->GetPos();
-					if ((p_pos.y - BLOCK_WIDTH) < pos.y && (p_pos.y + BLOCK_WIDTH) >= pos.y && (p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && (p_pos.x + BLOCK_HEIGHT) <= oldpos.x- Width)
+					if ((p_pos.y - BLOCK_WIDTH) < pos.y && 
+						(p_pos.y + BLOCK_WIDTH) >= pos.y && 
+						(p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && 
+						(p_pos.x + BLOCK_HEIGHT) <= oldpos.x- Width)
 					{
 						return TRUE;
 					}
-					else if ((p_pos.y - BLOCK_WIDTH) < pos.y && (p_pos.y + BLOCK_WIDTH) >= pos.y && (p_pos.x - BLOCK_HEIGHT) <= pos.x + Width &&  (p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
+					else if ((p_pos.y - BLOCK_WIDTH) < pos.y && 
+						(p_pos.y + BLOCK_WIDTH) >= pos.y && 
+						(p_pos.x - BLOCK_HEIGHT) <= pos.x + Width &&  
+						(p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
 					{
 						return TRUE;
 					}
-					else if ((p_pos.y - BLOCK_WIDTH) < pos.y- Height && (p_pos.y + BLOCK_WIDTH) >= pos.y- Height && (p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && (p_pos.x + BLOCK_HEIGHT) <= oldpos.x - Width)
+					else if ((p_pos.y - BLOCK_WIDTH) < pos.y- Height && 
+						(p_pos.y + BLOCK_WIDTH) >= pos.y- Height && 
+						(p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && 
+						(p_pos.x + BLOCK_HEIGHT) <= oldpos.x - Width)
 					{
 						return TRUE;
 					}
-					else if ((p_pos.y - BLOCK_WIDTH) < pos.y - Height && (p_pos.y + BLOCK_WIDTH) >= pos.y - Height && (p_pos.x - BLOCK_HEIGHT) <= pos.x + Width && (p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
+					else if ((p_pos.y - BLOCK_WIDTH) < pos.y - Height && 
+						(p_pos.y + BLOCK_WIDTH) >= pos.y - Height && 
+						(p_pos.x - BLOCK_HEIGHT) <= pos.x + Width && 
+						(p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
 					{
 						return TRUE;
 					}
-					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 3)) && (p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 3)) && (p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && (p_pos.x + BLOCK_HEIGHT) <= oldpos.x - Width)
+					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 3)) && 
+						(p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 3)) && 
+						(p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && 
+						(p_pos.x + BLOCK_HEIGHT) <= oldpos.x - Width)
 					{
 						return TRUE;
 					}
-					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 3)) && (p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 3)) && (p_pos.x - BLOCK_HEIGHT) <= pos.x + Width && (p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
+					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 3)) && 
+						(p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 3)) && 
+						(p_pos.x - BLOCK_HEIGHT) <= pos.x + Width && 
+						(p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
 					{
 						return TRUE;
 					}
-					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 2)) && (p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 2)) && (p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && (p_pos.x + BLOCK_HEIGHT) <= oldpos.x - Width)
+					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 2)) && 
+						(p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 2)) && 
+						(p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && 
+						(p_pos.x + BLOCK_HEIGHT) <= oldpos.x - Width)
 					{
 						return TRUE;
 					}
-					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 2)) && (p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 2)) && (p_pos.x - BLOCK_HEIGHT) <= pos.x + Width && (p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
+					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 2)) && 
+						(p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 2)) && 
+						(p_pos.x - BLOCK_HEIGHT) <= pos.x + Width && 
+						(p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
 					{
 						return TRUE;
 					}
-					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 4)) && (p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 4)) && (p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && (p_pos.x + BLOCK_HEIGHT) <= oldpos.x - Width)
+					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 4)) && 
+						(p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 4)) && 
+						(p_pos.x + BLOCK_HEIGHT) >= pos.x - Width && 
+						(p_pos.x + BLOCK_HEIGHT) <= oldpos.x - Width)
 					{
 						return TRUE;
 					}
-					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 4)) && (p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 4)) && (p_pos.x - BLOCK_HEIGHT) <= pos.x + Width && (p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
+					else if ((p_pos.y - BLOCK_WIDTH) < (pos.y - (Height / 4)) && 
+						(p_pos.y + BLOCK_WIDTH) >= (pos.y - (Height / 4)) && 
+						(p_pos.x - BLOCK_HEIGHT) <= pos.x + Width && 
+						(p_pos.x - BLOCK_HEIGHT) >= oldpos.x + Width)
 					{
 						return TRUE;
 					}

@@ -10,7 +10,7 @@
 #include "main.h"
 #include "Object2D.h"
 
-#define BOSS_HEIGHT (300.0f)
+#define BOSS_HEIGHT (350.0f)
 #define BOSS_WIDTH	 (300.0f)
 
 class CBoss : public CObject2D
@@ -37,6 +37,7 @@ public:
 	static void DamageBoss(int nDamage);
 	static D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_posOld;
+	static int GetLife(void) { return m_Life; }
 
 private:
 	D3DXVECTOR3 m_posWorld;

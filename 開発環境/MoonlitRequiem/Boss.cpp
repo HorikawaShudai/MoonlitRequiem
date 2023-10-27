@@ -13,6 +13,7 @@
 #include "CreateMap.h"
 #include "Player.h"
 #include "fade.h"
+#include "LifeGuage.h"
 
 
 #define BOSS_SPEED	(3.8f)
@@ -38,6 +39,7 @@ CBoss::CBoss(int nPriority) :CObject2D(nPriority)
 	m_Type = TYPE_NONE;
 	m_bJump = false;
 	m_JumpCnt = 0;
+	m_Life = 25;
 }
 //====================================================
 //デストラクタ
@@ -60,6 +62,7 @@ HRESULT CBoss::Init(void)
 	m_TexId = pTexture->Regist("data\\TEXTURE\\Boss.png");
 	BindTexture(pTexture->GetAddress(m_TexId));
 	SetType(TYPE_BOSS);
+	CObject2D::Create(TYPE_GUAGE,1);
 
 	return S_OK;
 }
@@ -149,7 +152,7 @@ void CBoss::Draw(void)
 //====================================================
 void CBoss::Create(D3DXVECTOR3 pos)
 {
-	m_pos = pos;
+	m_pos = D3DXVECTOR3(pos.x, pos.y+20.0f , pos.z);
 	CObject2D::Create(TYPE_BOSS, 1);
 
 }

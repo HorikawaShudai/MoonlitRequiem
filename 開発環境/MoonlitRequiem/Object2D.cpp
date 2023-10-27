@@ -13,11 +13,11 @@
 #include "Bullet.h"
 #include "Boss.h"
 #include "Bg.h"
+#include "LifeGuage.h"
 
 
 #define POLYGON_HEIGHT	(30.0f)
 #define POLYGON_WIDTH	(50.0f)
-
 //====================================================
 //コンストラクタ
 //====================================================
@@ -251,6 +251,11 @@ CObject2D *CObject2D::Create(TYPE type2D,int type)
 		break;
 	case TYPE_BG:
 		pObject2D = new CBg;
+
+		pObject2D->Init();
+		break;
+	case TYPE_GUAGE:
+		pObject2D = CLifeGuage::Create(type);
 
 		pObject2D->Init();
 		break;

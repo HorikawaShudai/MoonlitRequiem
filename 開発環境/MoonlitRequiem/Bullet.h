@@ -26,6 +26,12 @@ public:
 		TYPE_KNIFE,
 		TYPE_MAX
 	}BULLET_TYPE;
+	typedef enum
+	{
+		BULLET_NONE = 0,
+		BULLET_MOVE,
+		BULLET_MAX
+	}BULLET_MODE;
 
 	HRESULT Init(void);
 	void Uninit(void);
@@ -47,6 +53,7 @@ private:
 	D3DXVECTOR3 m_posWorld;
 	D3DXVECTOR3 m_posWorldOld;
 	int m_rot;
+	BULLET_MODE m_mode;
 };
 
 #endif#pragma once

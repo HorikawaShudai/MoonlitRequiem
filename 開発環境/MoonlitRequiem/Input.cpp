@@ -11,7 +11,8 @@
 //============================================================
 //静的メンバ変数
 //============================================================
-LPDIRECTINPUT8 CInput:: m_pInput = NULL;
+LPDIRECTINPUT8 CInput::m_pInput = NULL;
+LPDIRECTINPUT8 CInput:: m_pMouse = NULL;
 
 //============================================================
 //コンストラクタ
@@ -19,6 +20,7 @@ LPDIRECTINPUT8 CInput:: m_pInput = NULL;
 CInput :: CInput()
 {
 	m_pDevice = NULL;
+	m_pDIMouse = NULL;
 }
 //============================================================
 //デストラクタ
@@ -42,6 +44,15 @@ HRESULT CInput:: Init(HINSTANCE hInstance, HWND hWnd)
 			return E_FAIL;
 		}
 	}
+	if (m_pMouse == NULL)
+	{
+		if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION,
+			IID_IDirectInput8,
+			(void**)&m_pMouse, NULL)))
+		{
+			return E_FAIL;
+		}
+	}
 	return S_OK;
 }
 
@@ -57,12 +68,23 @@ void  CInput::Uninit(void)
 		m_pDevice->Release();
 		m_pDevice = NULL;
 	}
+	if (m_pDIMouse != NULL)
+	{
+		m_pDIMouse->Unacquire();
+		m_pDIMouse->Release();
+		m_pDIMouse = NULL;
+	}
 
 	//DirectInputオブジェクトの破棄
 	if (m_pInput != NULL)
 	{
 		m_pInput->Release();
 		m_pInput = NULL;
+	}
+	if (m_pMouse != NULL)
+	{
+		m_pMouse->Release();
+		m_pMouse = NULL;
 	}
 }
 
@@ -193,3 +215,90 @@ bool CInputGamePad::GetTrigger(WORD nButton)
 	return (nButton & 0x80) ? true : false;
 }
 #endif
+
+CInputMouse::CInputMouse()
+{
+	ZeroMemory(&m_zdiMouseState, sizeof(DIMOUSESTATE));
+}
+CInputMouse::~CInputMouse()
+{
+
+}
+HRESULT CInputMouse::Init(HINSTANCE hInstance, HWND hWnd)
+{
+	CInput::Init(hInstance, hWnd);
+
+	// マウス用にデバイスオブジェクトを作成
+	if(FAILED( m_pInput->CreateDevice(GUID_SysMouse, &m_pDIMouse, NULL)))
+	{
+		return E_FAIL;
+	}
+
+	// データフォーマットを設定
+	if (FAILED(m_pDIMouse->SetDataFormat(&c_dfDIMouse)))
+	{
+		return E_FAIL;
+
+	}
+
+	// モードを設定（フォアグラウンド＆非排他モード）
+	if (FAILED(m_pDIMouse->SetCooperativeLevel(hWnd, DISCL_BACKGROUND | DISCL_NONEXCLUSIVE)))
+	{
+		// エラーハンドリング
+		return 1;
+	}
+
+	// デバイスの設定
+	m_diprop.diph.dwSize = sizeof(m_diprop);
+	m_diprop.diph.dwHeaderSize = sizeof(m_diprop.diph);
+	m_diprop.diph.dwObj = 0;
+	m_diprop.diph.dwHow = DIPH_DEVICE;
+	m_diprop.dwData = DIPROPAXISMODE_REL;	// 相対値モードで設定（絶対値はDIPROPAXISMODE_ABS）
+
+	if (FAILED (m_pDIMouse->SetProperty(DIPROP_AXISMODE, &m_diprop.diph)))
+	{
+		return E_FAIL;
+
+	}
+
+	// 入力制御開始
+	m_pDIMouse->Acquire();
+
+	return true;
+}
+void CInputMouse::Uninit(void)
+{
+	if (m_pInput != NULL) 
+	{
+		m_pInput->Release();
+		m_pInput = NULL;
+	}
+}
+void CInputMouse::Update(void)
+{
+
+	DIMOUSESTATE m_zdiMouseState_bak;	// マウス情報(変化検知用)
+	m_pDIMouse->Poll();
+	if (SUCCEEDED (m_pDIMouse->GetDeviceState(sizeof(DIMOUSESTATE), &m_zdiMouseState_bak)))
+	{
+		for (int nCnt = 0; nCnt < MAX_CLLICK; nCnt++)
+		{
+			m_zdiMouseStateTrigger.rgbButtons[nCnt] = (m_zdiMouseState.rgbButtons[nCnt] ^ m_zdiMouseState_bak.rgbButtons[nCnt]) & m_zdiMouseState_bak.rgbButtons[nCnt];
+
+			m_zdiMouseState.rgbButtons[nCnt] = m_zdiMouseState_bak.rgbButtons[nCnt];
+
+		}
+	}
+	else
+	{
+		m_pDIMouse->Acquire();
+	}
+}
+bool CInputMouse::GetPress(int nKey)
+{
+	return (m_zdiMouseState.rgbButtons[nKey] & 0x80) ? true : false;
+}
+bool CInputMouse::GetTrigger(int nKey)
+{
+	return (m_zdiMouseStateTrigger.rgbButtons[nKey] & 0x80) ? true : false;
+}

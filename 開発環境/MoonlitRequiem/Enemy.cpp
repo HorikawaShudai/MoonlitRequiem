@@ -23,7 +23,7 @@
 #define ENEMY_MAXJUMP (2)
 
 LPDIRECT3DTEXTURE9 CEnemy::m_pTexture = NULL;
-D3DXVECTOR3 CEnemy::m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+D3DXVECTOR3 CEnemy::m_Createpos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 //====================================================
 //コンストラクタ
 //====================================================
@@ -55,9 +55,15 @@ HRESULT CEnemy::Init(void)
 {
 	CObject2D::Init();
 	SetAnim(EnemyRot, 2, 0, 1);
+	m_pos = m_Createpos;
 	m_posWorld = m_pos;
 	CTexture *pTexture = CManager::GetInstance()->GetpTexture();
 	m_TexId = pTexture->Regist("data\\TEXTURE\\Enemy.png");
+	D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
+
+	m_pos = m_posWorld + WorldPos;
+	SetPlayerPos(m_pos, ENEMY_HEIGHT, ENEMY_WIDTH);
+
 	BindTexture(pTexture->GetAddress(m_TexId));
 	SetType(TYPE_ENEMY);
 
@@ -88,8 +94,10 @@ void CEnemy::Uninit(void)
 void CEnemy::Update(void)
 {
 	m_posOld = GetPos();
-
 	m_pos = GetPos();
+
+	
+
 	EnemyContoroll();
 
 	m_move.y += GRAVITY;
@@ -103,7 +111,7 @@ void CEnemy::Update(void)
 		m_move.y = -ENEMY_JUMP;
 	}
 
-	m_pos += m_move;
+	m_posWorld += m_move;
 
 	if (CBlock::CollisionBlock(m_posOld, m_pos, ENEMY_HEIGHT, ENEMY_WIDTH) == TRUE)
 	{
@@ -113,7 +121,6 @@ void CEnemy::Update(void)
 
 		m_move.y = 0.0f;
 		m_bJump = false;
-		m_JumpCnt = 0;
 
 	}
 
@@ -125,12 +132,12 @@ void CEnemy::Update(void)
 		m_move.x = 0.0f;
 	}
 
-
+	
 	D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
 	m_pos = m_posWorld + WorldPos;
 	SetPlayerPos(m_pos, ENEMY_HEIGHT, ENEMY_WIDTH);
 
-	//CItem::CollisionItem(m_pos, ENEMY_HEIGHT, ENEMY_WIDTH);
+
 	m_move.x *= 0.06f;
 	EnemyTexture();
 
@@ -149,7 +156,7 @@ void CEnemy::Draw(void)
 //====================================================
 void CEnemy::Create(D3DXVECTOR3 pos)
 {
-	m_pos = pos;
+	m_Createpos = pos;
 	CObject2D::Create(TYPE_ENEMY, 1);
 
 }
@@ -159,7 +166,6 @@ void CEnemy::Create(D3DXVECTOR3 pos)
 //====================================================
 void CEnemy::EnemyContoroll(void)
 {
-
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		for (int nCntObj = 0; nCntObj < NUM_POLYGON; nCntObj++)
@@ -181,11 +187,28 @@ void CEnemy::EnemyContoroll(void)
 					{
 						EnemyRot = 0;
 					}
+					
 				}
-
 			}
+
 		}
 	}
+
+	if (m_bJump == false)
+	{
+		m_move.y = -8.0f;
+		m_bJump = true;
+		if (m_JumpCnt % 2 == 0)
+		{
+			m_move.x = 20.0f;
+		}
+		else if (m_JumpCnt % 2 == 1)
+		{
+			m_move.x = -20.0f;
+		}
+		m_JumpCnt++;
+	}
+
 }
 
 
@@ -272,7 +295,7 @@ bool CEnemy::ColisionEnemy(D3DXVECTOR3 pos)
 				if (type == CObject::TYPE_ENEMY)
 				{
 					D3DXVECTOR3 pPos = pObj->GetPos();
-					if (pPos.x - ENEMY_HEIGHT < pos.x&& pPos.y - ENEMY_WIDTH < pos.y && pPos.x + ENEMY_HEIGHT> pos.x&& pPos.y + ENEMY_WIDTH > pos.y)
+					if (pPos.x - ENEMY_WIDTH < pos.x&& pPos.y - ENEMY_HEIGHT < pos.y && pPos.x + ENEMY_WIDTH> pos.x&& pPos.y > pos.y)
 					{
 						pObj->Release();
 						return true;

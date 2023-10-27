@@ -11,7 +11,8 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Boss.h"
-
+#include "Game.h"
+#include "Block.h"
 
 
 D3DXVECTOR3 CBullet::m_Createpos;
@@ -47,7 +48,7 @@ HRESULT CBullet::Init(void)
 	m_type = m_Createtype;
 	m_pos = m_Createpos;
 	m_rot = m_CreateRot;
-
+	m_mode = BULLET_MOVE;
 	SetPos(m_pos, BULLET_HEIGHT, BULLET_WIDTH);
 	m_posWorld = m_pos;
 
@@ -76,22 +77,54 @@ void CBullet::Uninit(void)
 //====================================================
 void CBullet::Update(void)
 {
-	D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
+	/*D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
 	m_posWorldOld = CPlayer::GetWorld();
 
-	D3DXVECTOR3 Wpos = CPlayer::GetWorld() - m_posWorldOld;
-	m_pos += m_move + Wpos;
-	SetPos(m_pos, BULLET_HEIGHT, BULLET_WIDTH);
+	D3DXVECTOR3 Wpos = CPlayer::GetWorld();
+	m_pos += m_move + Wpos;*/
+	
 
-	if (CEnemy::ColisionEnemy(m_pos) == true)
+	CGame::PHASE pPhase = CGame::GetPhase();
+
+	if (m_mode == BULLET_MOVE)
 	{
-		CObject:: Release();
+		D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
+		m_posOld = m_pos;
+		m_pos += m_move;
+		SetPos(m_pos, BULLET_HEIGHT, BULLET_WIDTH);
+
+		if (CEnemy::ColisionEnemy(m_pos) == true && pPhase == CGame::PHASE_NORMAL)
+		{
+			CObject::Release();
+		}
+		if (CBoss::ColisionBoss(m_pos) == true && pPhase == CGame::PHASE_BOSS)
+		{
+			CObject::Release();
+		}
+		if (CBlock::HCollisionBlock(m_posOld, m_pos, BULLET_HEIGHT, BULLET_WIDTH) == TRUE)
+		{
+			CObject::Release();
+
+			/*m_posWorld = m_pos;
+			m_move.x = 0.0f;
+			m_mode = BULLET_NONE;*/
+
+
+		}
+	}
+	else if (m_mode == BULLET_NONE)
+	{
+		/*D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
+		m_pos = m_posWorld+ WorldPos;
+		SetPos(m_pos, BULLET_HEIGHT, BULLET_WIDTH);*/
 	}
 
-	if (CBoss::ColisionBoss(m_pos) == true)
-	{
-		CObject::Release();
-	}
+
+
+	
+
+
+	
 }
 
 //====================================================

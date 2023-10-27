@@ -33,6 +33,8 @@ CGame::~CGame()
 HRESULT CGame::Init(void)
 {
 	CSound::Play(CSound::SOUND_LABEL_BGM001);
+	CObject2D::Create(TYPE_BG, 0);
+
 	CObject2D::Create(CObject::TYPE_PLAYER, 1);
 	CCsvMap::LoadMap();
 	return S_OK;

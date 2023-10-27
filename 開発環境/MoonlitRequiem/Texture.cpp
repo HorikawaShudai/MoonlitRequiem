@@ -17,6 +17,7 @@ CTexture::TEXINFO CTexture::m_aTexInfo[TEX_MAX] =
 	{ "data\\TEXTURE\\SampleTitle.jpg" },
 	{ "data\\TEXTURE\\SampleResult.jpg" },
 	{ "data\\TEXTURE\\Boss.png" },
+	{ "data\\TEXTURE\\GameBg.png" },
 	{ "data\\TEXTURE\\Renga.png" }
 };
 
@@ -77,10 +78,10 @@ int CTexture::Regist(const char *pFilename)
 {
 	for (int nCnt = 0; nCnt < TEX_MAX; nCnt++)
 	{
-			if (m_aTexInfo[nCnt].pFilename == pFilename)
-			{
-				return nCnt;
-			}
+		if (m_aTexInfo[nCnt].pFilename == pFilename)
+		{
+			return nCnt;
+		}
 	}
 	return 0;
 }

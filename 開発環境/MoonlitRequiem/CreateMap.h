@@ -12,7 +12,7 @@
 #define MAX_HEIGHT (200)
 #define MAX_WHIGHT (200)
 #define TP_WHIGHT (20)
-#define TP_HEIGHT (180)
+#define TP_HEIGHT (300)
 #define MAX_TP (10)
 
 class CCsvMap

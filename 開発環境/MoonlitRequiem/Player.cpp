@@ -12,6 +12,8 @@
 #include "Block.h"
 #include "CreateMap.h"
 #include "Bullet.h"
+#include "LifeGuage.h"
+#include "Bg.h"
 
 #define PLAYER_HEIGHT	(100.0f)
 #define PLAYER_WIDTH	(30.0f)
@@ -24,6 +26,7 @@
 
 LPDIRECT3DTEXTURE9 CPlayer::m_pTexture = NULL;
 D3DXVECTOR3 CPlayer::m_WorldPos = D3DXVECTOR3(0.0f,0.0f,0.0f);
+int CPlayer::m_Life = 10;
 //====================================================
 //コンストラクタ
 //====================================================
@@ -39,6 +42,8 @@ CPlayer::CPlayer()
 	m_bJump = false;
 	m_JumpCnt = 0;
 	m_ScloolMove = true;
+	m_Life = 10;
+	m_WorldPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 //====================================================
 //デストラクタ
@@ -61,7 +66,7 @@ HRESULT CPlayer::Init(void)
 	m_TexId = pTexture->Regist("data\\TEXTURE\\player001.png");
 	BindTexture(pTexture->GetAddress(m_TexId));
 	SetType(TYPE_PLAYER);
-
+	CObject2D::Create(TYPE_GUAGE,0);
 	return S_OK;
 }
 
@@ -153,7 +158,7 @@ void CPlayer::Update(void)
 		SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
 
 	}
-
+	
 	//エリア移動処理
 	{
 		//D3DXVECTOR3 KeepPos = CCsvMap::CollisionTp(m_pos, m_WorldPos);
@@ -214,6 +219,7 @@ void CPlayer::Draw(void)
 void CPlayer::PlayerContoroll(void)
 {
 	CInputKeyboard *pKeyboard = CManager::GetInstance()->GetInputKeyboard();
+	CInputMouse *pMouse = CManager::GetInstance()->GetInputMouse();
 	
 
 	
@@ -251,7 +257,7 @@ void CPlayer::PlayerContoroll(void)
 		m_JumpCnt++;
 	}
 	//攻撃操作
-	if (pKeyboard->GetTrigger(DIK_B) == true)
+	if (pKeyboard->GetTrigger(DIK_B) == true  || pMouse->GetTrigger(pMouse->LEFT_CLLICK))
 	{//Bのみ押された場合
 		if (PlayerRot == 0)
 		{
@@ -263,9 +269,6 @@ void CPlayer::PlayerContoroll(void)
 			CBullet::Create(D3DXVECTOR3(m_pos.x - 15.0f, m_pos.y - 50.0f, 0.0f), D3DXVECTOR3(-14.0f, 0.0f, 0.0f), CBullet::TYPE_BOW, PlayerRot);
 
 		}
-	}
-	if (pKeyboard->GetTrigger(DIK_N) == true && m_Type != TYPE_JUMP)
-	{//Nのみ押された場合
 	}
 
 	
@@ -360,13 +363,14 @@ void CPlayer::ScloolWorld(void)
 		m_WorldPos.x -= m_move.x *10.0f;
 		m_pos.x = 800.0f;
 
-
+		CBg::AddMove(0.001f, 0.0f);
 	}
 	else if (m_pos.x < 480.0f)
 	{
 		m_pos.x = 480.0f;
 
 		m_WorldPos.x -= m_move.x*10.0f;
+		CBg::AddMove(-0.001f, 0.0f);
 
 	}
 	if (m_pos.y >  500.0f &&m_WorldPos.y > -2490.0f)
@@ -374,11 +378,13 @@ void CPlayer::ScloolWorld(void)
 		m_pos.y = 500.0f;
 
 		m_WorldPos.y -= m_move.y;
+		CBg::AddMove(0.0f, 0.003f);
 
 	}
 	else if (m_pos.y < 220.0f)
 	{
 		m_pos.y = 220.0f;
+		CBg::AddMove(0.0f, -0.003f);
 
 		m_WorldPos.y -= m_move.y;
 
