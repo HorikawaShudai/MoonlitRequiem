@@ -18,8 +18,10 @@
 D3DXVECTOR3 CBullet::m_Createpos;
 LPDIRECT3DTEXTURE9 CBullet::m_pTexture;
 D3DXVECTOR3 CBullet::m_Createmove;
+D3DXVECTOR3 CBullet::m_Createrot;
 int CBullet::m_CreateRot;
 CBullet::BULLET_TYPE CBullet::m_Createtype;
+CBullet::BULLET_OBJ CBullet::m_Createobj;
 //====================================================
 //コンストラクタ
 //====================================================
@@ -47,16 +49,31 @@ HRESULT CBullet::Init(void)
 	m_move = m_Createmove;
 	m_type = m_Createtype;
 	m_pos = m_Createpos;
-	m_rot = m_CreateRot;
-	m_mode = BULLET_MOVE;
-	SetPos(m_pos, BULLET_HEIGHT, BULLET_WIDTH);
+	m_nrot = m_CreateRot;
+	m_rot = m_Createrot;
+	m_Obj = m_Createobj;
 	m_posWorld = m_pos;
 
-	CTexture *pTexture = CManager::GetInstance()->GetpTexture();
-	m_TexId = pTexture->Regist("data\\TEXTURE\\Bow.png");
+	if (m_Obj == BULLET_PLAYER)
+	{
+		SetPos(m_pos, BULLET_HEIGHT, BULLET_WIDTH);
+
+		CTexture *pTexture = CManager::GetInstance()->GetpTexture();
+		m_TexId = pTexture->Regist("data\\TEXTURE\\Bow.png");
+		SetAnim(m_nrot, 2, 0, 1);
+
+	}
+	else if (m_Obj == BULLET_ENEMY)
+	{
+		SetPos(m_pos, 50.0f, 50.0f);
+
+		CTexture *pTexture = CManager::GetInstance()->GetpTexture();
+		m_TexId = pTexture->Regist("data\\TEXTURE\\Bullet.png");
+		SetAnim(0, 1, 0, 1);
+
+	}
 	//BindTexture(m_pTexture);
 	SetType(TYPE_BULLET);
-	SetAnim(m_rot,2,0,1);
 	return S_OK;
 }
 
@@ -82,15 +99,19 @@ void CBullet::Update(void)
 
 	D3DXVECTOR3 Wpos = CPlayer::GetWorld();
 	m_pos += m_move + Wpos;*/
-	
+
+	/*m_pos.x += sinf(m_rot.z) * m_move.x;
+	m_pos.y += cosf(m_rot.z) * m_move.y;*/
 
 	CGame::PHASE pPhase = CGame::GetPhase();
 
-	if (m_mode == BULLET_MOVE)
+	if (m_Obj == BULLET_PLAYER)
 	{
 		D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
 		m_posOld = m_pos;
-		m_pos += m_move;
+		//m_pos += m_move;
+		m_pos.x += sinf(m_rot.z) * m_move.x;
+		m_pos.y += cosf(m_rot.z) * m_move.y;
 		SetPos(m_pos, BULLET_HEIGHT, BULLET_WIDTH);
 
 		if (CEnemy::ColisionEnemy(m_pos) == true && pPhase == CGame::PHASE_NORMAL)
@@ -112,11 +133,23 @@ void CBullet::Update(void)
 
 		}
 	}
-	else if (m_mode == BULLET_NONE)
+	else if (m_Obj == BULLET_ENEMY)
 	{
-		/*D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
-		m_pos = m_posWorld+ WorldPos;
-		SetPos(m_pos, BULLET_HEIGHT, BULLET_WIDTH);*/
+		D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
+		m_posOld = m_pos;
+		//m_pos += m_move;
+		m_pos.x += sinf(m_rot.z) * m_move.x;
+		m_pos.y += cosf(m_rot.z) * m_move.y;
+		SetPos(m_pos, 50.0f, 50.0f);
+		if (CBlock::HCollisionBlock(m_posOld, m_pos, 50.0f, 50.0f) == TRUE)
+		{
+			CObject::Release();
+
+		}
+		if (CPlayer::Collision(m_pos) == true)
+		{
+			CObject::Release();
+		}
 	}
 
 
@@ -138,14 +171,15 @@ void CBullet::Draw(void)
 //====================================================
 //弾の生成処理
 //====================================================
-void CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, BULLET_TYPE type,int rot)
+void CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 move, D3DXVECTOR3 mrot, BULLET_TYPE type,int rot,BULLET_OBJ obj)
 {
 
 	m_Createmove = move;
 	m_Createtype = type;
 	m_Createpos = pos;
+	m_Createrot= mrot;
 	m_CreateRot = rot;
-
+	m_Createobj = obj;
 	CObject2D::Create(TYPE_BULLET, 1);
 
 }

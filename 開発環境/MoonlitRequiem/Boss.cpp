@@ -14,6 +14,7 @@
 #include "Player.h"
 #include "fade.h"
 #include "LifeGuage.h"
+#include "Bullet.h"
 
 
 #define BOSS_SPEED	(3.8f)
@@ -26,6 +27,7 @@
 LPDIRECT3DTEXTURE9 CBoss::m_pTexture = NULL;
 D3DXVECTOR3 CBoss::m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 int CBoss::m_Life = 20;
+CBoss::BOSS_TYPE CBoss::m_Type;
 //====================================================
 //コンストラクタ
 //====================================================
@@ -39,7 +41,8 @@ CBoss::CBoss(int nPriority) :CObject2D(nPriority)
 	m_Type = TYPE_NONE;
 	m_bJump = false;
 	m_JumpCnt = 0;
-	m_Life = 25;
+	m_Life = 35;
+	AttacKCount = 0;
 }
 //====================================================
 //デストラクタ
@@ -61,9 +64,10 @@ HRESULT CBoss::Init(void)
 	CTexture *pTexture = CManager::GetInstance()->GetpTexture();
 	m_TexId = pTexture->Regist("data\\TEXTURE\\Boss.png");
 	BindTexture(pTexture->GetAddress(m_TexId));
+	m_Type = TYPE_SPAWN;
 	SetType(TYPE_BOSS);
 	CObject2D::Create(TYPE_GUAGE,1);
-
+	m_col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f);
 	return S_OK;
 }
 
@@ -100,12 +104,6 @@ void CBoss::Update(void)
 	{
 		m_move.y = GRAVITY * 24;
 	}
-
-	if (m_move.y < -BOSS_JUMP)
-	{
-		m_move.y = -BOSS_JUMP;
-	}
-
 	m_pos += m_move;
 
 	if (CBlock::CollisionBlock(m_posOld, m_pos, BOSS_HEIGHT, BOSS_WIDTH) == TRUE)
@@ -127,6 +125,15 @@ void CBoss::Update(void)
 		m_pos.x = m_posOld.x;
 		m_move.x = 0.0f;
 	}
+	if (m_Type == TYPE_SPAWN)
+	{
+		m_col.a += 0.02f;
+		CObject2D::SetCol(m_col);
+		if (m_col.a > 1.0f)
+		{
+			m_Type = TYPE_NONE;
+		}
+	}
 
 
 	D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
@@ -135,7 +142,6 @@ void CBoss::Update(void)
 
 	//CItem::CollisionItem(m_pos, BOSS_HEIGHT, BOSS_WIDTH);
 	m_move.x *= 0.06f;
-	BossTexture();
 
 }
 
@@ -152,7 +158,7 @@ void CBoss::Draw(void)
 //====================================================
 void CBoss::Create(D3DXVECTOR3 pos)
 {
-	m_pos = D3DXVECTOR3(pos.x, pos.y+20.0f , pos.z);
+	m_pos = D3DXVECTOR3(pos.x+170.0f, pos.y+80.0f , pos.z);
 	CObject2D::Create(TYPE_BOSS, 1);
 
 }
@@ -162,85 +168,54 @@ void CBoss::Create(D3DXVECTOR3 pos)
 //====================================================
 void CBoss::BossContoroll(void)
 {
+	if (m_Type == TYPE_NONE)
+	{
 
-}
+		AttacKCount++;
+		if (AttacKCount % 120 == 0 && AttacKCount > 0)
+		{
+			D3DXVECTOR3 aPos;
+			for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
+			{
+				for (int nCntObj = 0; nCntObj < NUM_POLYGON; nCntObj++)
+				{
+					CObject *pObj;
+					pObj = GetObject(nCntPri, nCntObj);
+					if (pObj != NULL)
+					{
+						TYPE type;
+						type = pObj->GetType();
+						if (type == CObject::TYPE_PLAYER)
+						{
+							aPos = pObj->GetPos();
+						}
+					}
 
+				}
+			}
+			CBullet::Create(D3DXVECTOR3(m_pos.x, m_pos.y - 160.0f, 0.0f),
+				D3DXVECTOR3(-14.0f, -14.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, atan2f((m_pos.x - 20.0f) - aPos.x, (m_pos.y- 160.0f) - aPos.y+50.0f)),
+				CBullet::TYPE_BOW,
+				1,
+				CBullet::BULLET_ENEMY);
 
-void CBoss::BossTexture(void)
-{
-	//if (m_Type == TYPE_NONE)
-	//{
-	//	if (BossRot == 1)
-	//	{
-	//		SetAnim(BossRot, Boss_MAXTEX, 0, Boss_MAXTEX);
-
-	//	}
-	//	if (BossRot == 0)
-	//	{
-	//		SetAnim(BossRot, Boss_MAXTEX, 0, Boss_MAXTEX);
-
-	//	}
-	//}
-	//if (m_Type == TYPE_WALK)
-	//{
-	//	m_nCntAnim++;
-	//	if (m_nCntAnim % COUNT_SPEED == 0)
-	//	{
-	//		m_nCntPattern++;
-	//		if (BossRot == 1)
-	//		{
-	//			SetAnim(m_nCntPattern % Boss_MAXTEX, Boss_MAXTEX, 2, Boss_MAXTEX);
-
-	//		}
-	//		if (BossRot == 0)
-	//		{
-	//			SetAnim(m_nCntPattern % Boss_MAXTEX, Boss_MAXTEX, 1, Boss_MAXTEX);
-
-	//		}
-	//	}
-	//}
-	//if (m_Type == TYPE_JUMP)
-	//{
-	//	if (m_posOld.y < m_pos.y)
-	//	{//下に降りてる
-
-	//		if (BossRot == 1)
-	//		{//左
-	//			SetAnim(5, Boss_MAXTEX, 0, Boss_MAXTEX);
-
-	//		}
-	//		if (BossRot == 0)
-	//		{//右
-	//			SetAnim(4, Boss_MAXTEX, 0, Boss_MAXTEX);
-
-	//		}
-	//	}
-	//	else if (m_posOld.y > m_pos.y)
-	//	{//上に上がっている時
-
-	//		if (BossRot == 1)
-	//		{//左
-	//			SetAnim(3, Boss_MAXTEX, 0, Boss_MAXTEX);
-
-	//		}
-	//		if (BossRot == 0)
-	//		{//右
-	//			SetAnim(2, Boss_MAXTEX, 0, Boss_MAXTEX);
-
-	//		}
-	//	}
-	//}
+		}
+	}
 }
 
 bool CBoss::ColisionBoss(D3DXVECTOR3 pos)
 {
-
-	if (m_pos.x - BOSS_HEIGHT < pos.x&& m_pos.y - BOSS_WIDTH < pos.y && m_pos.x + BOSS_HEIGHT> pos.x&& m_pos.y + BOSS_WIDTH > pos.y)
+	if (m_Type == TYPE_NONE)
 	{
-		
-		DamageBoss(1);
-		return true;
+		if (m_pos.x - BOSS_HEIGHT < pos.x&& m_pos.y - BOSS_WIDTH < pos.y && m_pos.x + 200.0f> pos.x&& m_pos.y +200.0f > pos.y)
+		{
+
+			DamageBoss(1);
+			return true;
+		}
 	}
+	
 	return false;
 }
 void CBoss::DamageBoss(int nDamage)

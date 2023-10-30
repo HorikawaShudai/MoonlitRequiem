@@ -14,8 +14,10 @@ CTexture::TEXINFO CTexture::m_aTexInfo[TEX_MAX] =
 	{ "data\\TEXTURE\\player001.png" },
 	{ "data\\TEXTURE\\Enemy.png" },
 	{ "data\\TEXTURE\\Bow.png" },
+	{ "data\\TEXTURE\\Bullet.png" },
 	{ "data\\TEXTURE\\SampleTitle.jpg" },
-	{ "data\\TEXTURE\\SampleResult.jpg" },
+	{ "data\\TEXTURE\\gameclear.jpg" },
+	{ "data\\TEXTURE\\gameover.jpg" },
 	{ "data\\TEXTURE\\Boss.png" },
 	{ "data\\TEXTURE\\GameBg.png" },
 	{ "data\\TEXTURE\\Renga.png" }

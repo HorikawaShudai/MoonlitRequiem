@@ -69,13 +69,13 @@ HRESULT CBg::Init(void)
 	}
 	else if (mode == CScene::MODE_CLEAR)
 	{
-		m_TexId = pTexture->Regist("data\\TEXTURE\\SampleResult.jpg");
+		m_TexId = pTexture->Regist("data\\TEXTURE\\gameclear.jpg");
 		BindTexture(pTexture->GetAddress(m_TexId));
 
 	}
 	else if (mode == CScene::MODE_END)
 	{
-		m_TexId = pTexture->Regist("data\\TEXTURE\\SampleResult.jpg");
+		m_TexId = pTexture->Regist("data\\TEXTURE\\gameover.jpg");
 		BindTexture(pTexture->GetAddress(m_TexId));
 
 	}

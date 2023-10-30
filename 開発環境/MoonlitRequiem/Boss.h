@@ -21,7 +21,8 @@ public:
 	typedef enum
 	{
 		TYPE_NONE = 0,
-		TYPE_WALK,
+		TYPE_INVISIBLE,
+		TYPE_SPAWN,
 		TYPE_JUMP,
 		TYPE_ATTACK,
 		TYPE_ROLL
@@ -32,7 +33,6 @@ public:
 	void Draw(void);
 	static void Create(D3DXVECTOR3 pos);
 	void BossContoroll(void);
-	void BossTexture(void);
 	static bool ColisionBoss(D3DXVECTOR3 pos);
 	static void DamageBoss(int nDamage);
 	static D3DXVECTOR3 m_pos;
@@ -42,14 +42,16 @@ public:
 private:
 	D3DXVECTOR3 m_posWorld;
 	D3DXVECTOR3 m_move;
+	D3DXCOLOR m_col;
 	int m_nCntAnim;
 	int m_nCntPattern;
 	int BossRot;
 	int m_JumpCnt;
+	int AttacKCount;
 	static int m_Life;
 	bool m_bJump;
 	static LPDIRECT3DTEXTURE9 m_pTexture;
-	BOSS_TYPE m_Type;
+	static BOSS_TYPE m_Type;
 };
 
 #endif

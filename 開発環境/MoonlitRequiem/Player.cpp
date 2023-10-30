@@ -14,6 +14,7 @@
 #include "Bullet.h"
 #include "LifeGuage.h"
 #include "Bg.h"
+#include "fade.h"
 
 #define PLAYER_HEIGHT	(100.0f)
 #define PLAYER_WIDTH	(30.0f)
@@ -27,6 +28,7 @@
 LPDIRECT3DTEXTURE9 CPlayer::m_pTexture = NULL;
 D3DXVECTOR3 CPlayer::m_WorldPos = D3DXVECTOR3(0.0f,0.0f,0.0f);
 int CPlayer::m_Life = 10;
+CPlayer::STATE CPlayer::m_State;
 //====================================================
 //コンストラクタ
 //====================================================
@@ -43,6 +45,7 @@ CPlayer::CPlayer()
 	m_JumpCnt = 0;
 	m_ScloolMove = true;
 	m_Life = 10;
+	m_State = STATE_NONE;
 	m_WorldPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 //====================================================
@@ -202,7 +205,7 @@ void CPlayer::Update(void)
 
 	}
 	SetPlayerPos(m_pos, PLAYER_HEIGHT, PLAYER_WIDTH);
-
+	StateControl();
 }
 
 //====================================================
@@ -261,23 +264,14 @@ void CPlayer::PlayerContoroll(void)
 	{//Bのみ押された場合
 		if (PlayerRot == 0)
 		{
-			CBullet::Create(D3DXVECTOR3(m_pos.x +15.0f, m_pos.y - 50.0f, 0.0f), D3DXVECTOR3(14.0f, 0.0f, 0.0f), CBullet::TYPE_BOW, PlayerRot);
+			CBullet::Create(D3DXVECTOR3(m_pos.x +15.0f, m_pos.y - 50.0f, 0.0f), D3DXVECTOR3(14.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 1.0f), CBullet::TYPE_BOW, PlayerRot,CBullet::BULLET_PLAYER);
 
 		}
 		else
 		{
-			CBullet::Create(D3DXVECTOR3(m_pos.x - 15.0f, m_pos.y - 50.0f, 0.0f), D3DXVECTOR3(-14.0f, 0.0f, 0.0f), CBullet::TYPE_BOW, PlayerRot);
+			CBullet::Create(D3DXVECTOR3(m_pos.x - 15.0f, m_pos.y - 50.0f, 0.0f), D3DXVECTOR3(-14.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 1.0f), CBullet::TYPE_BOW, PlayerRot, CBullet::BULLET_PLAYER);
 
 		}
-	}
-
-	
-	
-	if (pKeyboard->GetTrigger(DIK_R) == true)
-	{//Wのみ押された場合
-		m_pos = D3DXVECTOR3(640.0f, 600.0f, 0.0f);
-		m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-		m_WorldPos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	}
 	if (pKeyboard->GetPress(DIK_W) == false && pKeyboard->GetPress(DIK_A) == false && pKeyboard->GetPress(DIK_D) == false && m_bJump == false)
 	{
@@ -398,4 +392,74 @@ D3DXVECTOR3 CPlayer::GetWorld(void)
 void CPlayer::SetScloolMove(bool CanMove)
 {
 	m_ScloolMove = CanMove;
+}
+
+bool CPlayer::Collision(D3DXVECTOR3 pos)
+{
+
+	if (m_State == STATE_NONE)
+	{
+
+		for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
+		{
+			for (int nCntObj = 0; nCntObj < NUM_POLYGON; nCntObj++)
+			{
+				CObject *pObj;
+				pObj = GetObject(nCntPri, nCntObj);
+				if (pObj != NULL)
+				{
+					TYPE type;
+					type = pObj->GetType();
+					if (type == CObject::TYPE_PLAYER)
+					{
+						D3DXVECTOR3 pPos = pObj->GetPos();
+						if (pPos.x - PLAYER_WIDTH < pos.x&& pPos.y - PLAYER_HEIGHT < pos.y && pPos.x + PLAYER_WIDTH> pos.x&& pPos.y > pos.y)
+						{
+							Damage(1);
+							m_State = STATE_DAMAGE;
+							return true;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
+void CPlayer::Damage(int nDamage)
+{
+	m_Life -= nDamage;
+	if (m_Life <= 0)
+	{
+		CFade *pFade = CManager::GetInstance()->GetpFade();
+
+		CFade::FADE StateFade;
+		StateFade = pFade->GetFade();
+		if (StateFade == CFade::FADE_NONE)
+		{
+
+			pFade->SetFade(CScene::MODE_END, 0.001f);
+		}
+	}
+}
+
+void CPlayer::StateControl(void)
+{
+	if (m_State == STATE_DAMAGE)
+	{
+		m_StateCnt++;
+		if (m_StateCnt % 120 == 0 && m_StateCnt >0)
+		{
+			m_State = STATE_NONE;
+			m_StateCnt = 0;
+
+		}
+		SetCol(D3DXCOLOR(0.8f, 0.2f, 0.2f, 1.0f));
+	}
+	else
+	{
+		SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	}
 }

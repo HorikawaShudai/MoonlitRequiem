@@ -12,6 +12,7 @@
 #include "Block.h"
 #include "CreateMap.h"
 #include "Player.h"
+#include "Bullet.h"
 
 
 
@@ -131,8 +132,8 @@ void CEnemy::Update(void)
 		m_pos.x = m_posOld.x;
 		m_move.x = 0.0f;
 	}
+	CPlayer::Collision(m_pos);
 
-	
 	D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
 	m_pos = m_posWorld + WorldPos;
 	SetPlayerPos(m_pos, ENEMY_HEIGHT, ENEMY_WIDTH);
@@ -166,6 +167,7 @@ void CEnemy::Create(D3DXVECTOR3 pos)
 //====================================================
 void CEnemy::EnemyContoroll(void)
 {
+	D3DXVECTOR3 aPos;
 	for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
 	{
 		for (int nCntObj = 0; nCntObj < NUM_POLYGON; nCntObj++)
@@ -179,6 +181,7 @@ void CEnemy::EnemyContoroll(void)
 				if (type == CObject::TYPE_PLAYER)
 				{
 					D3DXVECTOR3 pPos = pObj->GetPos();
+					aPos = pPos;
 					if (m_pos.x > pPos.x)
 					{
 						EnemyRot = 1;
@@ -206,6 +209,8 @@ void CEnemy::EnemyContoroll(void)
 		{
 			m_move.x = -20.0f;
 		}
+
+		
 		m_JumpCnt++;
 	}
 

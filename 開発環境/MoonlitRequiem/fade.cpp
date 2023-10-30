@@ -132,8 +132,6 @@ void CFade::Draw(void)
 	pDevice->SetStreamSource(0, m_pVtxBuffFade, 0, sizeof(VERTEX_2D));
 
 	pDevice->SetFVF(FVF_VERTEX_2D);
-	
-	
 
 	pDevice->SetTexture(0, NULL);
 
