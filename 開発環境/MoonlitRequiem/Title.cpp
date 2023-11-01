@@ -62,7 +62,7 @@ void CTitle::Update(void)
 	if (pKeyboard->GetTrigger(DIK_RETURN) == true && StateFade == CFade::FADE_NONE)
 	{
 
-		pFade->SetFade(CScene::MODE_GAME, 0.001f);
+		pFade->SetFade(CScene::MODE_TUTORIAL, 0.01f);
 	}
 }
 void CTitle::Draw(void)

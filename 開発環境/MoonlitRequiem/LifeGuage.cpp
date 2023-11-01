@@ -243,7 +243,7 @@ CLifeGuage *CLifeGuage::Create(int type)
 	}
 	else if (type == TYPE_BOSSLIFE)
 	{
-		pObj->m_pos = D3DXVECTOR3(300.0f, 640.0f, 0.0f);
+		pObj->m_pos = D3DXVECTOR3(440.0f, 640.0f, 0.0f);
 
 		pObj->m_col = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
 		pObj->m_Height = 40.0f;

@@ -141,15 +141,51 @@ void CBullet::Update(void)
 		m_pos.x += sinf(m_rot.z) * m_move.x;
 		m_pos.y += cosf(m_rot.z) * m_move.y;
 		SetPos(m_pos, 50.0f, 50.0f);
-		if (CBlock::HCollisionBlock(m_posOld, m_pos, 50.0f, 50.0f) == TRUE)
+		if (m_nrot == 0)
 		{
-			CObject::Release();
+			m_Cnt++;
+			if (m_Cnt == 120  && m_Cnt>0)
+			{
+				m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			}
+			if (m_Cnt == 180 && m_Cnt>0)
+			{
+				D3DXVECTOR3 aPos;
+				for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
+				{
+					for (int nCntObj = 0; nCntObj < NUM_POLYGON; nCntObj++)
+					{
+						CObject *pObj;
+						pObj = GetObject(nCntPri, nCntObj);
+						if (pObj != NULL)
+						{
+							TYPE type;
+							type = pObj->GetType();
+							if (type == CObject::TYPE_PLAYER)
+							{
+								aPos = pObj->GetPos();
+							}
+						}
 
+					}
+				}
+				m_move = D3DXVECTOR3(-10.0f, -10.0f, 0.0f);
+				m_rot = D3DXVECTOR3(0.0f, 0.0f, atan2f((m_pos.x) - aPos.x, (m_pos.y) - aPos.y + 50.0f));
+			}
 		}
-		if (CPlayer::Collision(m_pos) == true)
+		if (m_move.x == -10.0f)
 		{
-			CObject::Release();
+			if (CBlock::HCollisionBlock(m_posOld, m_pos, 50.0f, 50.0f) == TRUE)
+			{
+				CObject::Release();
+
+			}
+			if (CPlayer::Collision(m_pos) == true)
+			{
+				CObject::Release();
+			}
 		}
+		
 	}
 
 

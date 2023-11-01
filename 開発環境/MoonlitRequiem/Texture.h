@@ -26,6 +26,8 @@ public:
 		TEX_NUM8,
 		TEX_NUM9,
 		TEX_NUM10,
+		TEX_NUM11,
+		TEX_NUM12,
 		TEX_MAX
 	}TEXTURENUM;
 	HRESULT Load();

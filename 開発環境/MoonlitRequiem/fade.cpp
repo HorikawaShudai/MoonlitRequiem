@@ -82,7 +82,7 @@ void CFade::Update(void)
 	{
 		if (m_Fade == FADE_IN)
 		{
-			m_ColorFade.a -= 0.05f;
+			m_ColorFade.a -= 0.5f;
 			if (m_ColorFade.a <= 0.0f)
 			{
 				m_ColorFade.a = 0.0f;
@@ -91,7 +91,7 @@ void CFade::Update(void)
 		}
 		else if (m_Fade == FADE_OUT)
 		{
-			m_ColorFade.a += 0.05f;
+			m_ColorFade.a += 0.5f;
 			if (m_ColorFade.a >= 1.0f)
 			{
 				m_ColorFade.a = 1.0f;
@@ -124,10 +124,7 @@ void CFade::Draw(void)
 	//デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice = pRenderer->GetDevice();
 
-	//αブレンディングを加算合成に設定
-	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
 	//頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuffFade, 0, sizeof(VERTEX_2D));
 
@@ -137,10 +134,6 @@ void CFade::Draw(void)
 
 	//ポリゴン
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-	//αブレンディングから戻す
-	pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 void CFade::SetFade(CScene::MODE ModeNext, float Fade)

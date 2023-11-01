@@ -9,6 +9,7 @@
 #include "input.h"
 #include "Manager.h"
 #include "fade.h"
+#include "sound.h"
 
 CTutorial::CTutorial()
 {
@@ -21,7 +22,9 @@ CTutorial::~CTutorial()
 
 HRESULT CTutorial::Init(void)
 {
-	//CObject2D::Create(TYPE_BG, 0);
+	CSound::Play(CSound::SOUND_LABEL_BGM002);
+
+	CObject2D::Create(TYPE_BG, 0);
 
 	return S_OK;
 }
@@ -46,6 +49,7 @@ void CTutorial::Uninit(void)
 			}
 		}
 	}
+	CSound::StopSound();
 }
 void CTutorial::Update(void)
 {

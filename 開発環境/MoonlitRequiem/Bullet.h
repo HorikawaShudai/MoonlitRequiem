@@ -23,6 +23,7 @@ public:
 	{
 		TYPE_NONE = 0,
 		TYPE_BOW,
+		TYPE_BULL,
 		TYPE_KNIFE,
 		TYPE_MAX
 	}BULLET_TYPE;
@@ -56,6 +57,7 @@ private:
 	D3DXVECTOR3 m_posWorld;
 	D3DXVECTOR3 m_posWorldOld;
 	D3DXVECTOR3 m_rot;
+	int m_Cnt;
 	int m_nrot;
 	BULLET_OBJ m_Obj;
 };

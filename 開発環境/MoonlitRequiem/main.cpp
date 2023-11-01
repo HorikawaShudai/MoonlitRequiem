@@ -12,7 +12,7 @@
 
 //マクロ定義
 #define CLASS_NAME "WindowClass"		 //ウィンドウクラスの名前
-#define WINDOW_NAME "プロジェクト応用"	 //ウィンドウの名前
+#define WINDOW_NAME "MoonlitRequiem"	 //ウィンドウの名前
 #define ID_BUTTON_FINISH		(101)	 //終了ボタン
 
 //プロトタイプ宣言

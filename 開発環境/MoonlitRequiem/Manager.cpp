@@ -156,8 +156,9 @@ void CManager::Update(void)
 void CManager::Draw(void)
 {
 	m_pRenderer->Draw();
-	m_pFade->Draw();
 	m_pScene->Draw();
+	m_pFade->Draw();
+
 }
 
 //====================================================

@@ -15,6 +15,8 @@
 #include "LifeGuage.h"
 #include "Bg.h"
 #include "fade.h"
+#include "Game.h"
+#include "sound.h"
 
 #define PLAYER_HEIGHT	(100.0f)
 #define PLAYER_WIDTH	(30.0f)
@@ -128,17 +130,21 @@ void CPlayer::Update(void)
 	//	m_move.y = 0.0f;
 	//	m_pos.y = m_posOld.y;
 	//}
-	//if (m_pos.x - PLAYER_WIDTH < 0.0f)
-	//{
-	//	m_move.x = 0.0f;
-	//	m_pos.x = m_posOld.x;
-	//}
-	//if (m_pos.x + PLAYER_WIDTH > 1280.0f)
-	//{
-	//	m_move.x = 0.0f;
-	//	m_pos.x = m_posOld.x;
-	//}
+	CGame::PHASE aPhase = CGame::GetPhase();
 
+	if (aPhase == CGame::PHASE_BOSS)
+	{
+		if (m_pos.x - PLAYER_WIDTH < 0.0f)
+		{
+			m_move.x = 0.0f;
+			m_pos.x = m_posOld.x;
+		}
+		if (m_pos.x + PLAYER_WIDTH > 1280.0f)
+		{
+			m_move.x = 0.0f;
+			m_pos.x = m_posOld.x;
+		}
+	}
 	if (CBlock::CollisionBlock(m_posOld, m_pos,PLAYER_HEIGHT, PLAYER_WIDTH) == TRUE)
 	{
 
@@ -254,6 +260,7 @@ void CPlayer::PlayerContoroll(void)
 	}
 	if (pKeyboard->GetTrigger(DIK_SPACE) == true && m_JumpCnt < PLAYER_MAXJUMP)
 	{//スペースのみ押された場合
+		CSound::Play(CSound::SOUND_LABEL_SE001);
 		m_move.y -= PLAYER_JUMP;
 		m_Type = TYPE_JUMP;
 		m_bJump = true;
@@ -431,6 +438,8 @@ bool CPlayer::Collision(D3DXVECTOR3 pos)
 void CPlayer::Damage(int nDamage)
 {
 	m_Life -= nDamage;
+	CSound::Play(CSound::SOUND_LABEL_SE000);
+
 	if (m_Life <= 0)
 	{
 		CFade *pFade = CManager::GetInstance()->GetpFade();

@@ -15,7 +15,7 @@
 #include "fade.h"
 #include "LifeGuage.h"
 #include "Bullet.h"
-
+#include "sound.h"
 
 #define BOSS_SPEED	(3.8f)
 #define BOSS_JUMP (11.0f)
@@ -28,6 +28,8 @@ LPDIRECT3DTEXTURE9 CBoss::m_pTexture = NULL;
 D3DXVECTOR3 CBoss::m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 int CBoss::m_Life = 20;
 CBoss::BOSS_TYPE CBoss::m_Type;
+CBoss::STATE CBoss::m_State;
+
 //====================================================
 //コンストラクタ
 //====================================================
@@ -134,12 +136,21 @@ void CBoss::Update(void)
 			m_Type = TYPE_NONE;
 		}
 	}
+	if (m_Type == TYPE_INVISIBLE)
+	{
+		m_col.a -= 0.02f;
+		if (m_col.a < 0.0f)
+		{
+			m_col.a = 0.0f;
+		}
+		CObject2D::SetCol(m_col);
+	}
 
 
 	D3DXVECTOR3 WorldPos = CPlayer::GetWorld();
 	m_pos = m_posWorld + WorldPos;
 	SetPlayerPos(m_pos, BOSS_HEIGHT, BOSS_WIDTH);
-
+	StateControl();
 	//CItem::CollisionItem(m_pos, BOSS_HEIGHT, BOSS_WIDTH);
 	m_move.x *= 0.06f;
 
@@ -168,10 +179,14 @@ void CBoss::Create(D3DXVECTOR3 pos)
 //====================================================
 void CBoss::BossContoroll(void)
 {
+	if (AttacKCount % 660 == 0 && AttacKCount > 0)
+	{
+		m_Type = TYPE_INVISIBLE;
+	}
 	if (m_Type == TYPE_NONE)
 	{
-
 		AttacKCount++;
+
 		if (AttacKCount % 120 == 0 && AttacKCount > 0)
 		{
 			D3DXVECTOR3 aPos;
@@ -194,12 +209,74 @@ void CBoss::BossContoroll(void)
 				}
 			}
 			CBullet::Create(D3DXVECTOR3(m_pos.x, m_pos.y - 160.0f, 0.0f),
-				D3DXVECTOR3(-14.0f, -14.0f, 0.0f),
+				D3DXVECTOR3(-10.0f, -10.0f, 0.0f),
 				D3DXVECTOR3(0.0f, 0.0f, atan2f((m_pos.x - 20.0f) - aPos.x, (m_pos.y- 160.0f) - aPos.y+50.0f)),
-				CBullet::TYPE_BOW,
+				CBullet::TYPE_BULL,
 				1,
 				CBullet::BULLET_ENEMY);
 
+		}
+		
+	}
+	if (m_Type == TYPE_INVISIBLE)
+	{
+		AttacKCount++;
+
+		if (AttacKCount == 760)
+		{
+			CBullet::Create(D3DXVECTOR3(-50.0f, 160.0f, 0.0f),
+				D3DXVECTOR3(+5.5f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+				CBullet::TYPE_BULL,
+				0,
+				CBullet::BULLET_ENEMY);
+			CBullet::Create(D3DXVECTOR3(-120.0f, 160.0f, 0.0f),
+				D3DXVECTOR3(+5.5f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+				CBullet::TYPE_BULL,
+				0,
+				CBullet::BULLET_ENEMY);
+			CBullet::Create(D3DXVECTOR3(-190.0f, 160.0f, 0.0f),
+				D3DXVECTOR3(+5.5f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+				CBullet::TYPE_BULL,
+				0,
+				CBullet::BULLET_ENEMY);
+			CBullet::Create(D3DXVECTOR3(-260.0f, 160.0f, 0.0f),
+				D3DXVECTOR3(+5.5f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+				CBullet::TYPE_BULL,
+				0,
+				CBullet::BULLET_ENEMY);
+			CBullet::Create(D3DXVECTOR3(1380.0f, 320.0f, 0.0f),
+				D3DXVECTOR3(-5.5f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+				CBullet::TYPE_BULL,
+				0,
+				CBullet::BULLET_ENEMY);
+			CBullet::Create(D3DXVECTOR3(1450.0f, 320.0f, 0.0f),
+				D3DXVECTOR3(-5.5f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+				CBullet::TYPE_BULL,
+				0,
+				CBullet::BULLET_ENEMY);
+			CBullet::Create(D3DXVECTOR3(1520.0f, 320.0f, 0.0f),
+				D3DXVECTOR3(-5.5f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+				CBullet::TYPE_BULL,
+				0,
+				CBullet::BULLET_ENEMY);
+			CBullet::Create(D3DXVECTOR3(1590.0f, 320.0f, 0.0f),
+				D3DXVECTOR3(-5.5f, 0.0f, 0.0f),
+				D3DXVECTOR3(0.0f, 0.0f, 1.0f),
+				CBullet::TYPE_BULL,
+				0,
+				CBullet::BULLET_ENEMY);
+		}
+		if (AttacKCount % 1000 == 0)
+		{
+			m_Type = TYPE_SPAWN;
+			AttacKCount = 0;
 		}
 	}
 }
@@ -208,10 +285,11 @@ bool CBoss::ColisionBoss(D3DXVECTOR3 pos)
 {
 	if (m_Type == TYPE_NONE)
 	{
-		if (m_pos.x - BOSS_HEIGHT < pos.x&& m_pos.y - BOSS_WIDTH < pos.y && m_pos.x + 200.0f> pos.x&& m_pos.y +200.0f > pos.y)
+		if (m_pos.x - 200.0f < pos.x&& m_pos.y - BOSS_WIDTH < pos.y && m_pos.x + 250.0f> pos.x&& m_pos.y +200.0f > pos.y)
 		{
 
 			DamageBoss(1);
+			m_State = STATE_DAMAGE;
 			return true;
 		}
 	}
@@ -221,6 +299,7 @@ bool CBoss::ColisionBoss(D3DXVECTOR3 pos)
 void CBoss::DamageBoss(int nDamage)
 {
 	m_Life -= nDamage;
+	CSound::Play(CSound::SOUND_LABEL_SE000);
 	if (m_Life <= 0)
 	{
 		for (int nCntPri = 0; nCntPri < NUM_PRIORITY; nCntPri++)
@@ -250,5 +329,24 @@ void CBoss::DamageBoss(int nDamage)
 				}
 			}
 		}
+	}
+}
+
+void CBoss::StateControl(void)
+{
+	if (m_State == STATE_DAMAGE)
+	{
+		m_StateCnt++;
+		if (m_StateCnt % 5 == 0 && m_StateCnt >0)
+		{
+			m_State = STATE_NONE;
+			m_StateCnt = 0;
+
+		}
+		SetCol(D3DXCOLOR(0.8f, 0.2f, 0.2f, m_col.a));
+	}
+	else
+	{
+		SetCol(D3DXCOLOR(1.0f, 1.0f, 1.0f, m_col.a));
 	}
 }

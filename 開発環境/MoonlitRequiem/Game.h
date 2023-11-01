@@ -9,6 +9,7 @@
 
 #include "main.h"
 #include "Object.h"
+#include "Time.h"
 
 class CGame :public CObject
 {
@@ -33,5 +34,6 @@ public:
 private:
 	static bool bPouse;
 	static PHASE pPhase;
+	//static CTime *TimeAttack;
 };
 #endif

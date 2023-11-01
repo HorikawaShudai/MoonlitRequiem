@@ -12,6 +12,7 @@
 #include "Game.h"
 #include <stdio.h>
 #include <cstdlib>
+#include "sound.h"
 
 #define CSVMAP "data\\MAP\\Map.csv"
 
@@ -105,6 +106,8 @@ bool CCsvMap::BossSpown(D3DXVECTOR3 pPos, D3DXVECTOR3 pWorldpos)
 		{
 			CBoss::Create(m_BossTrigger);
 			CGame::SetPhase(CGame::PHASE_BOSS);
+			CSound::StopSound();
+			CSound::Play(CSound::SOUND_LABEL_BGM003);
 		}
 		return  true;
 	}

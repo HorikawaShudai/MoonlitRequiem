@@ -10,7 +10,7 @@
 #include "main.h"
 #include "Object2D.h"
 
-#define BOSS_HEIGHT (350.0f)
+#define BOSS_HEIGHT (400.0f)
 #define BOSS_WIDTH	 (300.0f)
 
 class CBoss : public CObject2D
@@ -27,6 +27,14 @@ public:
 		TYPE_ATTACK,
 		TYPE_ROLL
 	}BOSS_TYPE;
+
+	typedef enum
+	{
+		STATE_NONE = 0,
+		STATE_DAMAGE,
+		STATE_MAX
+	}STATE;
+
 	HRESULT Init(void);
 	void Uninit(void);
 	void Update(void);
@@ -38,7 +46,7 @@ public:
 	static D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_posOld;
 	static int GetLife(void) { return m_Life; }
-
+	void StateControl(void);
 private:
 	D3DXVECTOR3 m_posWorld;
 	D3DXVECTOR3 m_move;
@@ -50,6 +58,9 @@ private:
 	int AttacKCount;
 	static int m_Life;
 	bool m_bJump;
+	static STATE m_State;
+	int m_StateCnt;
+
 	static LPDIRECT3DTEXTURE9 m_pTexture;
 	static BOSS_TYPE m_Type;
 };

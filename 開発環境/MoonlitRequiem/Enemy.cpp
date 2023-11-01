@@ -13,7 +13,7 @@
 #include "CreateMap.h"
 #include "Player.h"
 #include "Bullet.h"
-
+#include "sound.h"
 
 
 #define ENEMY_SPEED	(3.8f)
@@ -302,6 +302,7 @@ bool CEnemy::ColisionEnemy(D3DXVECTOR3 pos)
 					D3DXVECTOR3 pPos = pObj->GetPos();
 					if (pPos.x - ENEMY_WIDTH < pos.x&& pPos.y - ENEMY_HEIGHT < pos.y && pPos.x + ENEMY_WIDTH> pos.x&& pPos.y > pos.y)
 					{
+						CSound::Play(CSound::SOUND_LABEL_SE000);
 						pObj->Release();
 						return true;
 					}

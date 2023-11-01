@@ -14,8 +14,12 @@ BYTE *CSound::m_apDataAudio[SOUND_LABEL_MAX] = {};					// オーディオデータ
 DWORD CSound::m_aSizeAudio[SOUND_LABEL_MAX] = {};					// オーディオデータサイズ
 CSound::SOUNDINFO CSound::m_aSoundInfo[SOUND_LABEL_MAX] =
 {
-	{ "data/BGM/bgm000.wav", 0 },		// BGM0
+	{ "data/BGM/bgm000.wav", -1 },		// BGM0
 	{ "data/BGM/bgm001.wav", -1 },		// BGM1
+	{ "data/BGM/bgm002.wav", -1 },		// BGM1
+	{ "data/BGM/bgm003.wav", -1 },		// BGM1
+	{ "data/BGM/hit000.wav", 0 },		// BGM1
+	{ "data/BGM/jump.wav", 0 },		// BGM1
 };
 
 

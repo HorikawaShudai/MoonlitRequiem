@@ -61,6 +61,12 @@ HRESULT CBg::Init(void)
 		BindTexture(pTexture->GetAddress(m_TexId));
 
 	}
+	if (mode == CScene::MODE_TUTORIAL)
+	{
+		m_TexId = pTexture->Regist("data\\TEXTURE\\ContorolBG.jpg");
+		BindTexture(pTexture->GetAddress(m_TexId));
+
+	}
 	if (mode == CScene::MODE_GAME)
 	{
 		m_TexId = pTexture->Regist("data\\TEXTURE\\GameBg.png");
@@ -76,12 +82,6 @@ HRESULT CBg::Init(void)
 	else if (mode == CScene::MODE_END)
 	{
 		m_TexId = pTexture->Regist("data\\TEXTURE\\gameover.jpg");
-		BindTexture(pTexture->GetAddress(m_TexId));
-
-	}
-	else if (mode == CScene::MODE_TUTORIAL)
-	{
-		m_TexId = pTexture->Regist("data\\TEXTURE\\Enemy.png");
 		BindTexture(pTexture->GetAddress(m_TexId));
 
 	}

@@ -14,7 +14,7 @@
 #include "Boss.h"
 #include "Bg.h"
 #include "LifeGuage.h"
-
+#include "Time.h"
 
 #define POLYGON_HEIGHT	(30.0f)
 #define POLYGON_WIDTH	(50.0f)
@@ -256,6 +256,11 @@ CObject2D *CObject2D::Create(TYPE type2D,int type)
 		break;
 	case TYPE_GUAGE:
 		pObject2D = CLifeGuage::Create(type);
+
+		pObject2D->Init();
+		break;
+	case TYPE_NUMBER:
+		pObject2D = new CNumber;
 
 		pObject2D->Init();
 		break;

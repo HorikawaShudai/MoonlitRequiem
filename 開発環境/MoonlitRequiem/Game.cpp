@@ -13,6 +13,7 @@
 #include "sound.h"
 #include "Object2D.h"
 #include "CreateMap.h"
+#include "Time.h"
 
 
 //====================================================
@@ -20,7 +21,7 @@
 //====================================================
 bool CGame::bPouse =false;
 CGame::PHASE CGame::pPhase  =PHASE_NORMAL;
-
+//CTime  *CGame::TimeAttack = {};
 CGame::CGame()
 {
 
@@ -37,6 +38,9 @@ HRESULT CGame::Init(void)
 
 	CObject2D::Create(CObject::TYPE_PLAYER, 1);
 	CCsvMap::LoadMap();
+
+	//TimeAttack = CTime::Create();
+	//CTime::SetScore(0);
 	return S_OK;
 }
 void CGame::Uninit(void)
@@ -57,6 +61,11 @@ void CGame::Uninit(void)
 			}
 		}
 	}
+	/*if (TimeAttack != NULL)
+	{
+		TimeAttack = NULL;
+		delete TimeAttack;
+	}*/
 	CSound::StopSound();
 }
 void CGame::Update(void)
@@ -72,6 +81,8 @@ void CGame::Update(void)
 
 	//	pFade->SetFade(CScene::MODE_CLEAR, 0.001f);
 	//}
+	//TimeAttack->AddScore(1);
+
 }
 void CGame::Draw(void)
 {
